@@ -1,0 +1,37 @@
+version: "3"
+services:
+  db: 
+    build: ./postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=pdns
+      - POSTGRES_PASSWORD=changeme
+    ports:
+      - 5432:5432
+  pdns:
+    build: ./pdns
+    restart: always
+    environment:
+      - GPGSQL_HOST=db
+      - GPGSQL_PORT=5432
+      - GPGSQL_USER=pdns
+      - GPGSQL_PASSWORD=changeme
+      - GPGSQL_DBNAME=pdns
+    ports:
+      - "53:53"
+      - "53:53/udp"
+    depends_on:
+      - db
+  grpc:
+    build: ../
+    depends_on:
+      - db
+      - pdns
+    ports:
+      - 8080:8080
+    environment:
+      - GPGSQL_HOST=db
+      - GPGSQL_PORT=5432
+      - GPGSQL_USER=pdns
+      - GPGSQL_PASSWORD=changeme
+      - GPGSQL_DBNAME=pdns
