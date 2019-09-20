@@ -17,6 +17,8 @@ services:
       - GPGSQL_USER=pdns
       - GPGSQL_PASSWORD=changeme
       - GPGSQL_DBNAME=pdns
+      - GRPC_HOST=0.0.0.0
+      - GRPC_PORT=50051
     ports:
       - "53:53"
       - "53:53/udp"
@@ -29,9 +31,11 @@ services:
       - pdns
     ports:
       - 8080:8080
+      - 50051:50051
     environment:
       - GPGSQL_HOST=db
-      - GPGSQL_PORT=5432
       - GPGSQL_USER=pdns
       - GPGSQL_PASSWORD=changeme
       - GPGSQL_DBNAME=pdns
+      - GRPC_HOST=0.0.0.0
+      - GRPC_PORT=50051
