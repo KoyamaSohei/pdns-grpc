@@ -22,6 +22,7 @@ services:
     ports:
       - "53:53"
       - "53:53/udp"
+      - "8081:8081"
     depends_on:
       - db
   grpc:
