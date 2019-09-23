@@ -44,8 +44,9 @@ func initConfig() {
 	}
 	pass := os.Getenv("GPGSQL_PASSWORD")
 	if pass != "" {
-		psqlpass = ""
+		psqlpass = pass
 	}
+
 }
 
 func GetDB() *sql.DB {
