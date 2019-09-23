@@ -1,6 +1,7 @@
 FROM alpine
 
 RUN apk add pdns
+RUN apk add pdns-backend-pgsql
 RUN apk add supervisor 
 ADD run.sh .
 RUN chmod a+x ./run.sh
