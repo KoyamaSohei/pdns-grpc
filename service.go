@@ -8,6 +8,7 @@ import (
 	"time"
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	_ "github.com/lib/pq"
 )
 
 type server struct{}
