@@ -10,4 +10,4 @@ jobs:
     - name: Build 
       run: cd example && docker-compose up --build -d
     - name: Test
-      run: cd example && docker-compose exec grpc go test -run ''
+      run: cd example && docker-compose exec -T grpc go test -run ''
