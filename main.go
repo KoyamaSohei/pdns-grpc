@@ -63,7 +63,7 @@ func GetDB() *sql.DB {
 
 func main() {
 	initConfig()
-	lis, err := net.Listen("tcp", pdnshost+pdnsport)
+	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

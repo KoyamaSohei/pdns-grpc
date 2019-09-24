@@ -1,0 +1,13 @@
+name: main
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build 
+      run: cd example && docker-compose up --build -d
+    - name: Test
+      run: cd example && docker-compose exec -T grpc go test -run ''
