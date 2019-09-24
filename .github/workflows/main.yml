@@ -8,6 +8,6 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build 
-      run: docker-compose up --build
+      run: cd example && docker-compose up --build
     - name: Test
-      run: docker-compose exec grpc go test -run ''
+      run: cd example && docker-compose exec grpc go test -run ''
