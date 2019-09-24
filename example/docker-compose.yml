@@ -40,3 +40,5 @@ services:
       - GPGSQL_DBNAME=pdns
       - GRPC_HOST=0.0.0.0
       - GRPC_PORT=50051
+      - SOA_MNAME=ns.example.com
+      - SOA_RNAME=mail.example.com
