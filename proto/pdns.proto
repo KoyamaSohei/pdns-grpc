@@ -3,5 +3,19 @@ syntax = "proto3";
 package pdns_grpc;
 
 service PdnsService {
+  rpc initZone (InitZoneRequest) returns (InitZoneResponse);
+}
 
+message InitZoneRequest {
+  string domain=1;
+  string account=2;
+}
+
+message InitZoneResponse {
+  ResponseStatus status=1;
+}
+
+enum ResponseStatus {
+  Ok = 0;
+  InternalServerError = 1;
 }

@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 
+	pb "github.com/KoyamaSohei/pdns-grpc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -44,7 +45,7 @@ func initConfig() {
 	}
 	pass := os.Getenv("GPGSQL_PASSWORD")
 	if pass != "" {
-		psqlpass = ""
+		psqlpass = pass
 	}
 }
 
@@ -62,12 +63,13 @@ func GetDB() *sql.DB {
 
 func main() {
 	initConfig()
-	lis, err := net.Listen("tcp", pdnshost+pdnsport)
+	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	log.Printf("listening on %s:%s", pdnshost, pdnsport)
 	s := grpc.NewServer()
+	pb.RegisterPdnsServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
