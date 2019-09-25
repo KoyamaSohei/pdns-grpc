@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
@@ -13,6 +16,10 @@ import (
 )
 
 type server struct{}
+
+const (
+	defTTL = 3600
+)
 
 var (
 	mname string = os.Getenv("SOA_MNAME")
@@ -32,6 +39,34 @@ func getDomainId(tx *sql.Tx, ctx context.Context, name string, account string) (
 		return "", err
 	}
 	return id, nil
+}
+
+func updateSoa(tx *sql.Tx, ctx context.Context, origin string, account string) error {
+	id, err := getDomainId(tx, ctx, origin, account)
+	var c string
+	err = tx.QueryRowContext(ctx, "SELECT content FROM records WHERE type = 'SOA' AND domain_id = $1;", id).Scan(&c)
+	if err != nil {
+		log.Println("update soa: " + origin)
+		log.Println(err)
+		return err
+	}
+	r := strings.Split(c, " ")
+	if len(r) != 7 {
+		return errors.New("soa record is invalid")
+	}
+	mname := r[0]
+	rname := r[1]
+	se, err := strconv.Atoi(r[2])
+	if err != nil {
+		se = genSerial()
+	}
+	se += 1
+	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1 AND type = 'SOA';", id)
+	if err != nil {
+		return err
+	}
+	_, err = tx.ExecContext(ctx, "INSERT INTO records(domain_id,name,type,content,change_date) VALUES ($1,$2,'SOA',$3,$4);", id, origin, fmt.Sprintf("%s %s %d 60 60 60 60", mname, rname, se), se)
+	return err
 }
 
 func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.InitZoneResponse, error) {
@@ -71,5 +106,41 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
 	return &pb.InitZoneResponse{Status: pb.ResponseStatus_Ok}, nil
+
+}
+
+func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.AddRecordResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	a := in.GetAccount()
+	o := in.GetOrigin()
+	id, err := getDomainId(tx, ctx, o, a)
+	if err != nil {
+		tx.Rollback()
+		return &pb.AddRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
+	}
+	ttl := in.GetTtl()
+	if ttl == 0 {
+		ttl = defTTL
+	}
+	se := genSerial()
+	_, err = tx.ExecContext(ctx, "INSERT INTO records(domain_id,name,type,content,change_date,ttl) VALUES ($1,$2,$3,$4,$5,$6);", id, in.GetName(), in.GetType().String(), in.GetContent(), se, ttl)
+	if err != nil {
+		tx.Rollback()
+		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = updateSoa(tx, ctx, o, a)
+	if err != nil {
+		tx.Rollback()
+		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.AddRecordResponse{Status: pb.ResponseStatus_Ok}, nil
 
 }
