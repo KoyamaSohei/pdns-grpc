@@ -15,7 +15,6 @@ import (
 // test on ./example/docker-compose up.
 
 func TestInitZone(t *testing.T) {
-	address, err := net.ResolveIPAddr("ip", "grpc")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -32,7 +31,7 @@ func TestInitZone(t *testing.T) {
 		log.Println(status)
 		return
 	}
-	address, err = net.ResolveIPAddr("ip", "pdns")
+	address, err := net.ResolveIPAddr("ip", "pdns")
 	if err != nil {
 		log.Fatal(err)
 	}
