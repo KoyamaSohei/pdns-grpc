@@ -9,6 +9,7 @@ import (
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
 	"github.com/miekg/dns"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
@@ -79,5 +80,5 @@ func TestAddRecord(t *testing.T) {
 		log.Fatalln("record not found")
 	}
 	a := res.Answer[0].(*dns.A)
-	log.Println(a.String())
+	assert.Equal(t, a.A.String(), "21.21.21.21")
 }
