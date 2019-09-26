@@ -9,6 +9,7 @@ import (
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
 	"github.com/miekg/dns"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
@@ -79,5 +80,21 @@ func TestAddRecord(t *testing.T) {
 		log.Fatalln("record not found")
 	}
 	a := res.Answer[0].(*dns.A)
-	log.Println(a.String())
+	assert.Equal(t, a.A.String(), "21.21.21.21")
+}
+
+func TestGetRecords(t *testing.T) {
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example3.com", Account: "testuser"})
+	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example3.com", Origin: "example3.com", Account: "testuser", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
+	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "sub.example3.com", Origin: "example3.com", Account: "testuser", Type: pb.RRType_A, Ttl: 3500, Content: "22.22.22.22"})
+	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example3.com", Account: "testuser"})
+	assert.Equal(t, len(r.GetRecords()), 2)
 }

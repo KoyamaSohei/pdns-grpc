@@ -5,6 +5,7 @@ package pdns_grpc;
 service PdnsService {
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
+  rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
 }
 
 message InitZoneRequest {
@@ -27,6 +28,23 @@ message AddRecordRequest {
 
 message AddRecordResponse {
   ResponseStatus status=1;
+}
+
+message GetRecordsRequest {
+  string origin=1;
+  string account=2;
+}
+
+message GetRecordsResponse {
+  ResponseStatus status=1;
+  repeated Record records=2;
+}
+
+message Record {
+  string name=1;
+  string type=2;
+  int64 ttl=3;
+  string content=4;
 }
 
 enum ResponseStatus {
