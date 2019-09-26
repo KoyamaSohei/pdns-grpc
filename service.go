@@ -145,6 +145,27 @@ func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.Ad
 
 }
 
+func (s *server) RemoveRecord(ctx context.Context, in *pb.RemoveRecordRequest) (*pb.RemoveRecordResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	if err != nil {
+		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
+	}
+	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1 AND name = $2 AND type = $3 AND content = $4", id, in.GetName(), in.GetType().String(), in.GetContent())
+	if err != nil {
+		tx.Rollback()
+		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_Ok}, nil
+}
+
 func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.GetRecordsResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
