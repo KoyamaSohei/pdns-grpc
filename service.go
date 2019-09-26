@@ -144,3 +144,31 @@ func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.Ad
 	return &pb.AddRecordResponse{Status: pb.ResponseStatus_Ok}, nil
 
 }
+
+func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.GetRecordsResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	if err != nil {
+		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_BadRequest}, err
+	}
+	rows, err := GetDB().QueryContext(ctx, "SELECT name,type,content,ttl FROM records WHERE domain_id = $1 AND type != 'SOA';", id)
+	li := make([]*pb.Record, 0, 10)
+	for rows.Next() {
+		item := new(pb.Record)
+		err := rows.Scan(&item.Name, &item.Type, &item.Content, &item.Ttl)
+		if err != nil {
+			tx.Rollback()
+			return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+		}
+		li = append(li, item)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.GetRecordsResponse{Status: pb.ResponseStatus_Ok, Records: li}, nil
+}
