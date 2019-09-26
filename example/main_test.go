@@ -98,3 +98,19 @@ func TestGetRecords(t *testing.T) {
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example3.com", Account: "testuser"})
 	assert.Equal(t, len(r.GetRecords()), 2)
 }
+
+func TestRemoveRecord(t *testing.T) {
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example4.com", Account: "testuser"})
+	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example4.com", Origin: "example4.com", Account: "testuser", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
+	_, err = c.RemoveRecord(ctx, &pb.RemoveRecordRequest{Name: "example4.com", Origin: "example4.com", Account: "testuser", Type: pb.RRType_A, Content: "11.11.11.11"})
+	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com", Account: "testuser"})
+	assert.Equal(t, len(r.GetRecords()), 0)
+}
