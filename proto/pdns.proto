@@ -4,6 +4,11 @@ package pdns_grpc;
 
 service PdnsService {
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
+  rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
+  rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
+  rpc removeRecord (RemoveRecordRequest) returns (RemoveRecordResponse);
+  rpc updateRecord (UpdateRecordRequest) returns (UpdateRecordResponse);
+  rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
 }
 
 message InitZoneRequest {
@@ -15,7 +20,164 @@ message InitZoneResponse {
   ResponseStatus status=1;
 }
 
+message RemoveZoneRequest {
+  string domain=1;
+  string account=2;
+}
+
+message RemoveZoneResponse {
+  ResponseStatus status=1;
+}
+
+message AddRecordRequest {
+  string name=1;
+  string origin=2;
+  string account=3;
+  RRType type=4;
+  int64 ttl=5;
+  string content=6;
+}
+
+message AddRecordResponse {
+  ResponseStatus status=1;
+}
+
+message RemoveRecordRequest {
+  string name=1;
+  string origin=2;
+  string account=3;
+  RRType type=4;
+  string content=5;
+}
+
+message RemoveRecordResponse {
+  ResponseStatus status=1;
+}
+
+message UpdateRecordRequest {
+  string origin=1;
+  string account=2;
+  Target target=3;
+  Source source=4;
+  message Target {
+    string name=1;
+    RRType type=2;
+    string content=3;
+  }
+  message Source {
+    string name=1;
+    RRType type=2;
+    string content=3;
+    int64 ttl=4;
+  }
+}
+
+message UpdateRecordResponse {
+  ResponseStatus status=1;
+}
+
+message GetRecordsRequest {
+  string origin=1;
+  string account=2;
+}
+
+message GetRecordsResponse {
+  ResponseStatus status=1;
+  repeated Record records=2;
+}
+
+message Record {
+  string name=1;
+  string type=2;
+  int64 ttl=3;
+  string content=4;
+}
+
 enum ResponseStatus {
   Ok = 0;
   InternalServerError = 1;
+  BadRequest = 2;
+}
+
+enum RRType {
+  A=0;
+  AAAA=1;
+  AFSDB=2;
+  ANY=3;
+  ATMA=4;
+  AVC=5;
+  AXFR=6;
+  CAA=7;
+  CDNSKEY=8;
+  CDS=9;
+  CERT=10;
+  CNAME=11;
+  CSYNC=12;
+  DHCID=13;
+  DLV=14;
+  DNAME=15;
+  DNSKEY=16;
+  DS=17;
+  EID=18;
+  EUI48=19;
+  EUI64=20;
+  GID=21;
+  GPOS=22;
+  HINFO=23;
+  HIP=24;
+  ISDN=25;
+  IXFR=26;
+  KEY=27;
+  KX=28;
+  L32=29;
+  L64=30;
+  LOC=31;
+  LP=32;
+  MAILA=33;
+  MAILB=34;
+  MB=35;
+  MD=36;
+  MF=37;
+  MG=38;
+  MINFO=39;
+  MR=40;
+  MX=41;
+  NAPTR=42;
+  NID=43;
+  NIMLOC=44;
+  NINFO=45;
+  NS=46;
+  NSEC=47;
+  NSEC3=48;
+  NSEC3PARAM=49;
+  NULL=50;
+  NXT=51;
+  None=52;
+  OPENPGPKEY=53;
+  OPT=54;
+  PTR=55;
+  PX=56;
+  RKEY=57;
+  RP=58;
+  RRSIG=59;
+  RT=60;
+  Reserved=61;
+  SIG=62;
+  SMIMEA=63;
+  SOA=64;
+  SPF=65;
+  SRV=66;
+  SSHFP=67;
+  TA=68;
+  TALINK=69;
+  TKEY=70;
+  TLSA=71;
+  TSIG=72;
+  TXT=73;
+  UID=74;
+  UINFO=75;
+  UNSPEC=76;
+  URI=77;
+  X25=78;
+  NSAP_PTR=79;
 }

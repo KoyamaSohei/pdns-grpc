@@ -29,16 +29,19 @@ type ResponseStatus int32
 const (
 	ResponseStatus_Ok                  ResponseStatus = 0
 	ResponseStatus_InternalServerError ResponseStatus = 1
+	ResponseStatus_BadRequest          ResponseStatus = 2
 )
 
 var ResponseStatus_name = map[int32]string{
 	0: "Ok",
 	1: "InternalServerError",
+	2: "BadRequest",
 }
 
 var ResponseStatus_value = map[string]int32{
 	"Ok":                  0,
 	"InternalServerError": 1,
+	"BadRequest":          2,
 }
 
 func (x ResponseStatus) String() string {
@@ -47,6 +50,265 @@ func (x ResponseStatus) String() string {
 
 func (ResponseStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_dfbda3279c8b118b, []int{0}
+}
+
+type RRType int32
+
+const (
+	RRType_A          RRType = 0
+	RRType_AAAA       RRType = 1
+	RRType_AFSDB      RRType = 2
+	RRType_ANY        RRType = 3
+	RRType_ATMA       RRType = 4
+	RRType_AVC        RRType = 5
+	RRType_AXFR       RRType = 6
+	RRType_CAA        RRType = 7
+	RRType_CDNSKEY    RRType = 8
+	RRType_CDS        RRType = 9
+	RRType_CERT       RRType = 10
+	RRType_CNAME      RRType = 11
+	RRType_CSYNC      RRType = 12
+	RRType_DHCID      RRType = 13
+	RRType_DLV        RRType = 14
+	RRType_DNAME      RRType = 15
+	RRType_DNSKEY     RRType = 16
+	RRType_DS         RRType = 17
+	RRType_EID        RRType = 18
+	RRType_EUI48      RRType = 19
+	RRType_EUI64      RRType = 20
+	RRType_GID        RRType = 21
+	RRType_GPOS       RRType = 22
+	RRType_HINFO      RRType = 23
+	RRType_HIP        RRType = 24
+	RRType_ISDN       RRType = 25
+	RRType_IXFR       RRType = 26
+	RRType_KEY        RRType = 27
+	RRType_KX         RRType = 28
+	RRType_L32        RRType = 29
+	RRType_L64        RRType = 30
+	RRType_LOC        RRType = 31
+	RRType_LP         RRType = 32
+	RRType_MAILA      RRType = 33
+	RRType_MAILB      RRType = 34
+	RRType_MB         RRType = 35
+	RRType_MD         RRType = 36
+	RRType_MF         RRType = 37
+	RRType_MG         RRType = 38
+	RRType_MINFO      RRType = 39
+	RRType_MR         RRType = 40
+	RRType_MX         RRType = 41
+	RRType_NAPTR      RRType = 42
+	RRType_NID        RRType = 43
+	RRType_NIMLOC     RRType = 44
+	RRType_NINFO      RRType = 45
+	RRType_NS         RRType = 46
+	RRType_NSEC       RRType = 47
+	RRType_NSEC3      RRType = 48
+	RRType_NSEC3PARAM RRType = 49
+	RRType_NULL       RRType = 50
+	RRType_NXT        RRType = 51
+	RRType_None       RRType = 52
+	RRType_OPENPGPKEY RRType = 53
+	RRType_OPT        RRType = 54
+	RRType_PTR        RRType = 55
+	RRType_PX         RRType = 56
+	RRType_RKEY       RRType = 57
+	RRType_RP         RRType = 58
+	RRType_RRSIG      RRType = 59
+	RRType_RT         RRType = 60
+	RRType_Reserved   RRType = 61
+	RRType_SIG        RRType = 62
+	RRType_SMIMEA     RRType = 63
+	RRType_SOA        RRType = 64
+	RRType_SPF        RRType = 65
+	RRType_SRV        RRType = 66
+	RRType_SSHFP      RRType = 67
+	RRType_TA         RRType = 68
+	RRType_TALINK     RRType = 69
+	RRType_TKEY       RRType = 70
+	RRType_TLSA       RRType = 71
+	RRType_TSIG       RRType = 72
+	RRType_TXT        RRType = 73
+	RRType_UID        RRType = 74
+	RRType_UINFO      RRType = 75
+	RRType_UNSPEC     RRType = 76
+	RRType_URI        RRType = 77
+	RRType_X25        RRType = 78
+	RRType_NSAP_PTR   RRType = 79
+)
+
+var RRType_name = map[int32]string{
+	0:  "A",
+	1:  "AAAA",
+	2:  "AFSDB",
+	3:  "ANY",
+	4:  "ATMA",
+	5:  "AVC",
+	6:  "AXFR",
+	7:  "CAA",
+	8:  "CDNSKEY",
+	9:  "CDS",
+	10: "CERT",
+	11: "CNAME",
+	12: "CSYNC",
+	13: "DHCID",
+	14: "DLV",
+	15: "DNAME",
+	16: "DNSKEY",
+	17: "DS",
+	18: "EID",
+	19: "EUI48",
+	20: "EUI64",
+	21: "GID",
+	22: "GPOS",
+	23: "HINFO",
+	24: "HIP",
+	25: "ISDN",
+	26: "IXFR",
+	27: "KEY",
+	28: "KX",
+	29: "L32",
+	30: "L64",
+	31: "LOC",
+	32: "LP",
+	33: "MAILA",
+	34: "MAILB",
+	35: "MB",
+	36: "MD",
+	37: "MF",
+	38: "MG",
+	39: "MINFO",
+	40: "MR",
+	41: "MX",
+	42: "NAPTR",
+	43: "NID",
+	44: "NIMLOC",
+	45: "NINFO",
+	46: "NS",
+	47: "NSEC",
+	48: "NSEC3",
+	49: "NSEC3PARAM",
+	50: "NULL",
+	51: "NXT",
+	52: "None",
+	53: "OPENPGPKEY",
+	54: "OPT",
+	55: "PTR",
+	56: "PX",
+	57: "RKEY",
+	58: "RP",
+	59: "RRSIG",
+	60: "RT",
+	61: "Reserved",
+	62: "SIG",
+	63: "SMIMEA",
+	64: "SOA",
+	65: "SPF",
+	66: "SRV",
+	67: "SSHFP",
+	68: "TA",
+	69: "TALINK",
+	70: "TKEY",
+	71: "TLSA",
+	72: "TSIG",
+	73: "TXT",
+	74: "UID",
+	75: "UINFO",
+	76: "UNSPEC",
+	77: "URI",
+	78: "X25",
+	79: "NSAP_PTR",
+}
+
+var RRType_value = map[string]int32{
+	"A":          0,
+	"AAAA":       1,
+	"AFSDB":      2,
+	"ANY":        3,
+	"ATMA":       4,
+	"AVC":        5,
+	"AXFR":       6,
+	"CAA":        7,
+	"CDNSKEY":    8,
+	"CDS":        9,
+	"CERT":       10,
+	"CNAME":      11,
+	"CSYNC":      12,
+	"DHCID":      13,
+	"DLV":        14,
+	"DNAME":      15,
+	"DNSKEY":     16,
+	"DS":         17,
+	"EID":        18,
+	"EUI48":      19,
+	"EUI64":      20,
+	"GID":        21,
+	"GPOS":       22,
+	"HINFO":      23,
+	"HIP":        24,
+	"ISDN":       25,
+	"IXFR":       26,
+	"KEY":        27,
+	"KX":         28,
+	"L32":        29,
+	"L64":        30,
+	"LOC":        31,
+	"LP":         32,
+	"MAILA":      33,
+	"MAILB":      34,
+	"MB":         35,
+	"MD":         36,
+	"MF":         37,
+	"MG":         38,
+	"MINFO":      39,
+	"MR":         40,
+	"MX":         41,
+	"NAPTR":      42,
+	"NID":        43,
+	"NIMLOC":     44,
+	"NINFO":      45,
+	"NS":         46,
+	"NSEC":       47,
+	"NSEC3":      48,
+	"NSEC3PARAM": 49,
+	"NULL":       50,
+	"NXT":        51,
+	"None":       52,
+	"OPENPGPKEY": 53,
+	"OPT":        54,
+	"PTR":        55,
+	"PX":         56,
+	"RKEY":       57,
+	"RP":         58,
+	"RRSIG":      59,
+	"RT":         60,
+	"Reserved":   61,
+	"SIG":        62,
+	"SMIMEA":     63,
+	"SOA":        64,
+	"SPF":        65,
+	"SRV":        66,
+	"SSHFP":      67,
+	"TA":         68,
+	"TALINK":     69,
+	"TKEY":       70,
+	"TLSA":       71,
+	"TSIG":       72,
+	"TXT":        73,
+	"UID":        74,
+	"UINFO":      75,
+	"UNSPEC":     76,
+	"URI":        77,
+	"X25":        78,
+	"NSAP_PTR":   79,
+}
+
+func (x RRType) String() string {
+	return proto.EnumName(RRType_name, int32(x))
+}
+
+func (RRType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{1}
 }
 
 type InitZoneRequest struct {
@@ -135,30 +397,789 @@ func (m *InitZoneResponse) GetStatus() ResponseStatus {
 	return ResponseStatus_Ok
 }
 
+type RemoveZoneRequest struct {
+	Domain               string   `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
+	Account              string   `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RemoveZoneRequest) Reset()         { *m = RemoveZoneRequest{} }
+func (m *RemoveZoneRequest) String() string { return proto.CompactTextString(m) }
+func (*RemoveZoneRequest) ProtoMessage()    {}
+func (*RemoveZoneRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{2}
+}
+
+func (m *RemoveZoneRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RemoveZoneRequest.Unmarshal(m, b)
+}
+func (m *RemoveZoneRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RemoveZoneRequest.Marshal(b, m, deterministic)
+}
+func (m *RemoveZoneRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RemoveZoneRequest.Merge(m, src)
+}
+func (m *RemoveZoneRequest) XXX_Size() int {
+	return xxx_messageInfo_RemoveZoneRequest.Size(m)
+}
+func (m *RemoveZoneRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RemoveZoneRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RemoveZoneRequest proto.InternalMessageInfo
+
+func (m *RemoveZoneRequest) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+func (m *RemoveZoneRequest) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+type RemoveZoneResponse struct {
+	Status               ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pdns_grpc.ResponseStatus" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *RemoveZoneResponse) Reset()         { *m = RemoveZoneResponse{} }
+func (m *RemoveZoneResponse) String() string { return proto.CompactTextString(m) }
+func (*RemoveZoneResponse) ProtoMessage()    {}
+func (*RemoveZoneResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{3}
+}
+
+func (m *RemoveZoneResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RemoveZoneResponse.Unmarshal(m, b)
+}
+func (m *RemoveZoneResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RemoveZoneResponse.Marshal(b, m, deterministic)
+}
+func (m *RemoveZoneResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RemoveZoneResponse.Merge(m, src)
+}
+func (m *RemoveZoneResponse) XXX_Size() int {
+	return xxx_messageInfo_RemoveZoneResponse.Size(m)
+}
+func (m *RemoveZoneResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RemoveZoneResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RemoveZoneResponse proto.InternalMessageInfo
+
+func (m *RemoveZoneResponse) GetStatus() ResponseStatus {
+	if m != nil {
+		return m.Status
+	}
+	return ResponseStatus_Ok
+}
+
+type AddRecordRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Origin               string   `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	Account              string   `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+	Type                 RRType   `protobuf:"varint,4,opt,name=type,proto3,enum=pdns_grpc.RRType" json:"type,omitempty"`
+	Ttl                  int64    `protobuf:"varint,5,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Content              string   `protobuf:"bytes,6,opt,name=content,proto3" json:"content,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddRecordRequest) Reset()         { *m = AddRecordRequest{} }
+func (m *AddRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*AddRecordRequest) ProtoMessage()    {}
+func (*AddRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{4}
+}
+
+func (m *AddRecordRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddRecordRequest.Unmarshal(m, b)
+}
+func (m *AddRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddRecordRequest.Marshal(b, m, deterministic)
+}
+func (m *AddRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddRecordRequest.Merge(m, src)
+}
+func (m *AddRecordRequest) XXX_Size() int {
+	return xxx_messageInfo_AddRecordRequest.Size(m)
+}
+func (m *AddRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddRecordRequest proto.InternalMessageInfo
+
+func (m *AddRecordRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *AddRecordRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *AddRecordRequest) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+func (m *AddRecordRequest) GetType() RRType {
+	if m != nil {
+		return m.Type
+	}
+	return RRType_A
+}
+
+func (m *AddRecordRequest) GetTtl() int64 {
+	if m != nil {
+		return m.Ttl
+	}
+	return 0
+}
+
+func (m *AddRecordRequest) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+type AddRecordResponse struct {
+	Status               ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pdns_grpc.ResponseStatus" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *AddRecordResponse) Reset()         { *m = AddRecordResponse{} }
+func (m *AddRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*AddRecordResponse) ProtoMessage()    {}
+func (*AddRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{5}
+}
+
+func (m *AddRecordResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddRecordResponse.Unmarshal(m, b)
+}
+func (m *AddRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddRecordResponse.Marshal(b, m, deterministic)
+}
+func (m *AddRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddRecordResponse.Merge(m, src)
+}
+func (m *AddRecordResponse) XXX_Size() int {
+	return xxx_messageInfo_AddRecordResponse.Size(m)
+}
+func (m *AddRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddRecordResponse proto.InternalMessageInfo
+
+func (m *AddRecordResponse) GetStatus() ResponseStatus {
+	if m != nil {
+		return m.Status
+	}
+	return ResponseStatus_Ok
+}
+
+type RemoveRecordRequest struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Origin               string   `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	Account              string   `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+	Type                 RRType   `protobuf:"varint,4,opt,name=type,proto3,enum=pdns_grpc.RRType" json:"type,omitempty"`
+	Content              string   `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RemoveRecordRequest) Reset()         { *m = RemoveRecordRequest{} }
+func (m *RemoveRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*RemoveRecordRequest) ProtoMessage()    {}
+func (*RemoveRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{6}
+}
+
+func (m *RemoveRecordRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RemoveRecordRequest.Unmarshal(m, b)
+}
+func (m *RemoveRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RemoveRecordRequest.Marshal(b, m, deterministic)
+}
+func (m *RemoveRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RemoveRecordRequest.Merge(m, src)
+}
+func (m *RemoveRecordRequest) XXX_Size() int {
+	return xxx_messageInfo_RemoveRecordRequest.Size(m)
+}
+func (m *RemoveRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RemoveRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RemoveRecordRequest proto.InternalMessageInfo
+
+func (m *RemoveRecordRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *RemoveRecordRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *RemoveRecordRequest) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+func (m *RemoveRecordRequest) GetType() RRType {
+	if m != nil {
+		return m.Type
+	}
+	return RRType_A
+}
+
+func (m *RemoveRecordRequest) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+type RemoveRecordResponse struct {
+	Status               ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pdns_grpc.ResponseStatus" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *RemoveRecordResponse) Reset()         { *m = RemoveRecordResponse{} }
+func (m *RemoveRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*RemoveRecordResponse) ProtoMessage()    {}
+func (*RemoveRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{7}
+}
+
+func (m *RemoveRecordResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RemoveRecordResponse.Unmarshal(m, b)
+}
+func (m *RemoveRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RemoveRecordResponse.Marshal(b, m, deterministic)
+}
+func (m *RemoveRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RemoveRecordResponse.Merge(m, src)
+}
+func (m *RemoveRecordResponse) XXX_Size() int {
+	return xxx_messageInfo_RemoveRecordResponse.Size(m)
+}
+func (m *RemoveRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RemoveRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RemoveRecordResponse proto.InternalMessageInfo
+
+func (m *RemoveRecordResponse) GetStatus() ResponseStatus {
+	if m != nil {
+		return m.Status
+	}
+	return ResponseStatus_Ok
+}
+
+type UpdateRecordRequest struct {
+	Origin               string                      `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Account              string                      `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Target               *UpdateRecordRequest_Target `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
+	Source               *UpdateRecordRequest_Source `protobuf:"bytes,4,opt,name=source,proto3" json:"source,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *UpdateRecordRequest) Reset()         { *m = UpdateRecordRequest{} }
+func (m *UpdateRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateRecordRequest) ProtoMessage()    {}
+func (*UpdateRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{8}
+}
+
+func (m *UpdateRecordRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateRecordRequest.Unmarshal(m, b)
+}
+func (m *UpdateRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateRecordRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateRecordRequest.Merge(m, src)
+}
+func (m *UpdateRecordRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateRecordRequest.Size(m)
+}
+func (m *UpdateRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateRecordRequest proto.InternalMessageInfo
+
+func (m *UpdateRecordRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *UpdateRecordRequest) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+func (m *UpdateRecordRequest) GetTarget() *UpdateRecordRequest_Target {
+	if m != nil {
+		return m.Target
+	}
+	return nil
+}
+
+func (m *UpdateRecordRequest) GetSource() *UpdateRecordRequest_Source {
+	if m != nil {
+		return m.Source
+	}
+	return nil
+}
+
+type UpdateRecordRequest_Target struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Type                 RRType   `protobuf:"varint,2,opt,name=type,proto3,enum=pdns_grpc.RRType" json:"type,omitempty"`
+	Content              string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateRecordRequest_Target) Reset()         { *m = UpdateRecordRequest_Target{} }
+func (m *UpdateRecordRequest_Target) String() string { return proto.CompactTextString(m) }
+func (*UpdateRecordRequest_Target) ProtoMessage()    {}
+func (*UpdateRecordRequest_Target) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{8, 0}
+}
+
+func (m *UpdateRecordRequest_Target) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateRecordRequest_Target.Unmarshal(m, b)
+}
+func (m *UpdateRecordRequest_Target) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateRecordRequest_Target.Marshal(b, m, deterministic)
+}
+func (m *UpdateRecordRequest_Target) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateRecordRequest_Target.Merge(m, src)
+}
+func (m *UpdateRecordRequest_Target) XXX_Size() int {
+	return xxx_messageInfo_UpdateRecordRequest_Target.Size(m)
+}
+func (m *UpdateRecordRequest_Target) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateRecordRequest_Target.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateRecordRequest_Target proto.InternalMessageInfo
+
+func (m *UpdateRecordRequest_Target) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *UpdateRecordRequest_Target) GetType() RRType {
+	if m != nil {
+		return m.Type
+	}
+	return RRType_A
+}
+
+func (m *UpdateRecordRequest_Target) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+type UpdateRecordRequest_Source struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Type                 RRType   `protobuf:"varint,2,opt,name=type,proto3,enum=pdns_grpc.RRType" json:"type,omitempty"`
+	Content              string   `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	Ttl                  int64    `protobuf:"varint,4,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateRecordRequest_Source) Reset()         { *m = UpdateRecordRequest_Source{} }
+func (m *UpdateRecordRequest_Source) String() string { return proto.CompactTextString(m) }
+func (*UpdateRecordRequest_Source) ProtoMessage()    {}
+func (*UpdateRecordRequest_Source) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{8, 1}
+}
+
+func (m *UpdateRecordRequest_Source) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateRecordRequest_Source.Unmarshal(m, b)
+}
+func (m *UpdateRecordRequest_Source) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateRecordRequest_Source.Marshal(b, m, deterministic)
+}
+func (m *UpdateRecordRequest_Source) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateRecordRequest_Source.Merge(m, src)
+}
+func (m *UpdateRecordRequest_Source) XXX_Size() int {
+	return xxx_messageInfo_UpdateRecordRequest_Source.Size(m)
+}
+func (m *UpdateRecordRequest_Source) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateRecordRequest_Source.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateRecordRequest_Source proto.InternalMessageInfo
+
+func (m *UpdateRecordRequest_Source) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *UpdateRecordRequest_Source) GetType() RRType {
+	if m != nil {
+		return m.Type
+	}
+	return RRType_A
+}
+
+func (m *UpdateRecordRequest_Source) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
+func (m *UpdateRecordRequest_Source) GetTtl() int64 {
+	if m != nil {
+		return m.Ttl
+	}
+	return 0
+}
+
+type UpdateRecordResponse struct {
+	Status               ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pdns_grpc.ResponseStatus" json:"status,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *UpdateRecordResponse) Reset()         { *m = UpdateRecordResponse{} }
+func (m *UpdateRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*UpdateRecordResponse) ProtoMessage()    {}
+func (*UpdateRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{9}
+}
+
+func (m *UpdateRecordResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateRecordResponse.Unmarshal(m, b)
+}
+func (m *UpdateRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateRecordResponse.Marshal(b, m, deterministic)
+}
+func (m *UpdateRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateRecordResponse.Merge(m, src)
+}
+func (m *UpdateRecordResponse) XXX_Size() int {
+	return xxx_messageInfo_UpdateRecordResponse.Size(m)
+}
+func (m *UpdateRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateRecordResponse proto.InternalMessageInfo
+
+func (m *UpdateRecordResponse) GetStatus() ResponseStatus {
+	if m != nil {
+		return m.Status
+	}
+	return ResponseStatus_Ok
+}
+
+type GetRecordsRequest struct {
+	Origin               string   `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Account              string   `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetRecordsRequest) Reset()         { *m = GetRecordsRequest{} }
+func (m *GetRecordsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetRecordsRequest) ProtoMessage()    {}
+func (*GetRecordsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{10}
+}
+
+func (m *GetRecordsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetRecordsRequest.Unmarshal(m, b)
+}
+func (m *GetRecordsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetRecordsRequest.Marshal(b, m, deterministic)
+}
+func (m *GetRecordsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetRecordsRequest.Merge(m, src)
+}
+func (m *GetRecordsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetRecordsRequest.Size(m)
+}
+func (m *GetRecordsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetRecordsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetRecordsRequest proto.InternalMessageInfo
+
+func (m *GetRecordsRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *GetRecordsRequest) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+type GetRecordsResponse struct {
+	Status               ResponseStatus `protobuf:"varint,1,opt,name=status,proto3,enum=pdns_grpc.ResponseStatus" json:"status,omitempty"`
+	Records              []*Record      `protobuf:"bytes,2,rep,name=records,proto3" json:"records,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
+	XXX_unrecognized     []byte         `json:"-"`
+	XXX_sizecache        int32          `json:"-"`
+}
+
+func (m *GetRecordsResponse) Reset()         { *m = GetRecordsResponse{} }
+func (m *GetRecordsResponse) String() string { return proto.CompactTextString(m) }
+func (*GetRecordsResponse) ProtoMessage()    {}
+func (*GetRecordsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{11}
+}
+
+func (m *GetRecordsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetRecordsResponse.Unmarshal(m, b)
+}
+func (m *GetRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetRecordsResponse.Marshal(b, m, deterministic)
+}
+func (m *GetRecordsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetRecordsResponse.Merge(m, src)
+}
+func (m *GetRecordsResponse) XXX_Size() int {
+	return xxx_messageInfo_GetRecordsResponse.Size(m)
+}
+func (m *GetRecordsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetRecordsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetRecordsResponse proto.InternalMessageInfo
+
+func (m *GetRecordsResponse) GetStatus() ResponseStatus {
+	if m != nil {
+		return m.Status
+	}
+	return ResponseStatus_Ok
+}
+
+func (m *GetRecordsResponse) GetRecords() []*Record {
+	if m != nil {
+		return m.Records
+	}
+	return nil
+}
+
+type Record struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Type                 string   `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Ttl                  int64    `protobuf:"varint,3,opt,name=ttl,proto3" json:"ttl,omitempty"`
+	Content              string   `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Record) Reset()         { *m = Record{} }
+func (m *Record) String() string { return proto.CompactTextString(m) }
+func (*Record) ProtoMessage()    {}
+func (*Record) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dfbda3279c8b118b, []int{12}
+}
+
+func (m *Record) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Record.Unmarshal(m, b)
+}
+func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Record.Marshal(b, m, deterministic)
+}
+func (m *Record) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Record.Merge(m, src)
+}
+func (m *Record) XXX_Size() int {
+	return xxx_messageInfo_Record.Size(m)
+}
+func (m *Record) XXX_DiscardUnknown() {
+	xxx_messageInfo_Record.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Record proto.InternalMessageInfo
+
+func (m *Record) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Record) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *Record) GetTtl() int64 {
+	if m != nil {
+		return m.Ttl
+	}
+	return 0
+}
+
+func (m *Record) GetContent() string {
+	if m != nil {
+		return m.Content
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterEnum("pdns_grpc.ResponseStatus", ResponseStatus_name, ResponseStatus_value)
+	proto.RegisterEnum("pdns_grpc.RRType", RRType_name, RRType_value)
 	proto.RegisterType((*InitZoneRequest)(nil), "pdns_grpc.InitZoneRequest")
 	proto.RegisterType((*InitZoneResponse)(nil), "pdns_grpc.InitZoneResponse")
+	proto.RegisterType((*RemoveZoneRequest)(nil), "pdns_grpc.RemoveZoneRequest")
+	proto.RegisterType((*RemoveZoneResponse)(nil), "pdns_grpc.RemoveZoneResponse")
+	proto.RegisterType((*AddRecordRequest)(nil), "pdns_grpc.AddRecordRequest")
+	proto.RegisterType((*AddRecordResponse)(nil), "pdns_grpc.AddRecordResponse")
+	proto.RegisterType((*RemoveRecordRequest)(nil), "pdns_grpc.RemoveRecordRequest")
+	proto.RegisterType((*RemoveRecordResponse)(nil), "pdns_grpc.RemoveRecordResponse")
+	proto.RegisterType((*UpdateRecordRequest)(nil), "pdns_grpc.UpdateRecordRequest")
+	proto.RegisterType((*UpdateRecordRequest_Target)(nil), "pdns_grpc.UpdateRecordRequest.Target")
+	proto.RegisterType((*UpdateRecordRequest_Source)(nil), "pdns_grpc.UpdateRecordRequest.Source")
+	proto.RegisterType((*UpdateRecordResponse)(nil), "pdns_grpc.UpdateRecordResponse")
+	proto.RegisterType((*GetRecordsRequest)(nil), "pdns_grpc.GetRecordsRequest")
+	proto.RegisterType((*GetRecordsResponse)(nil), "pdns_grpc.GetRecordsResponse")
+	proto.RegisterType((*Record)(nil), "pdns_grpc.Record")
 }
 
 func init() { proto.RegisterFile("pdns.proto", fileDescriptor_dfbda3279c8b118b) }
 
 var fileDescriptor_dfbda3279c8b118b = []byte{
-	// 216 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2a, 0x48, 0xc9, 0x2b,
-	0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x04, 0xb1, 0xe3, 0xd3, 0x8b, 0x0a, 0x92, 0x95,
-	0x9c, 0xb9, 0xf8, 0x3d, 0xf3, 0x32, 0x4b, 0xa2, 0xf2, 0xf3, 0x52, 0x83, 0x52, 0x0b, 0x4b, 0x53,
-	0x8b, 0x4b, 0x84, 0xc4, 0xb8, 0xd8, 0x52, 0xf2, 0x73, 0x13, 0x33, 0xf3, 0x24, 0x18, 0x15, 0x18,
-	0x35, 0x38, 0x83, 0xa0, 0x3c, 0x21, 0x09, 0x2e, 0xf6, 0xc4, 0xe4, 0xe4, 0xfc, 0xd2, 0xbc, 0x12,
-	0x09, 0x26, 0xb0, 0x04, 0x8c, 0xab, 0xe4, 0xca, 0x25, 0x80, 0x30, 0xa4, 0xb8, 0x20, 0x3f, 0xaf,
-	0x38, 0x55, 0xc8, 0x90, 0x8b, 0xad, 0xb8, 0x24, 0xb1, 0xa4, 0xb4, 0x18, 0x6c, 0x0a, 0x9f, 0x91,
-	0xa4, 0x1e, 0xdc, 0x52, 0x3d, 0x98, 0xa2, 0x60, 0xb0, 0x82, 0x20, 0xa8, 0x42, 0x2d, 0x43, 0x2e,
-	0x3e, 0x54, 0x19, 0x21, 0x36, 0x2e, 0x26, 0xff, 0x6c, 0x01, 0x06, 0x21, 0x71, 0x2e, 0x61, 0xcf,
-	0xbc, 0x92, 0xd4, 0xa2, 0xbc, 0xc4, 0x9c, 0xe0, 0xd4, 0xa2, 0xb2, 0xd4, 0x22, 0xd7, 0xa2, 0xa2,
-	0xfc, 0x22, 0x01, 0x46, 0xa3, 0x20, 0x2e, 0xee, 0x80, 0x94, 0xbc, 0x62, 0x90, 0x60, 0x66, 0x72,
-	0xaa, 0x90, 0x33, 0x17, 0x47, 0x26, 0xd4, 0x21, 0x42, 0x52, 0x48, 0x16, 0xa2, 0x79, 0x51, 0x4a,
-	0x1a, 0xab, 0x1c, 0xc4, 0xea, 0x24, 0x36, 0x70, 0x20, 0x19, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff,
-	0xb9, 0xe5, 0xa4, 0xcb, 0x32, 0x01, 0x00, 0x00,
+	// 1082 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x6f, 0x73, 0xdb, 0xc4,
+	0x13, 0xae, 0xff, 0x44, 0x89, 0x37, 0xf9, 0xa5, 0x9b, 0x4b, 0x7f, 0xad, 0xeb, 0xa6, 0x6d, 0x30,
+	0x04, 0x42, 0x0a, 0x81, 0x3a, 0x69, 0x28, 0x7f, 0x0a, 0x5c, 0x24, 0xd9, 0x39, 0x62, 0xcb, 0x9a,
+	0x93, 0x9c, 0x71, 0x18, 0x98, 0x8e, 0xb1, 0x35, 0x19, 0x0f, 0x8d, 0x64, 0x24, 0xa5, 0x33, 0xfd,
+	0x20, 0xbc, 0xe3, 0x1d, 0x2f, 0xf9, 0x36, 0x7c, 0x22, 0x66, 0x4f, 0x72, 0x22, 0x25, 0xce, 0xc0,
+	0xa4, 0xc3, 0xf0, 0x4a, 0xab, 0x7d, 0x76, 0x9f, 0x7d, 0x76, 0x75, 0xba, 0x3b, 0x80, 0xc9, 0xc8,
+	0x8f, 0xb6, 0x27, 0x61, 0x10, 0x07, 0xac, 0x42, 0xf6, 0xcb, 0x93, 0x70, 0x32, 0xac, 0xeb, 0x70,
+	0x5b, 0xf8, 0xe3, 0xf8, 0xfb, 0xc0, 0xf7, 0xa4, 0xf7, 0xcb, 0x99, 0x17, 0xc5, 0xec, 0x2e, 0x68,
+	0xa3, 0xe0, 0x74, 0x30, 0xf6, 0xab, 0x85, 0xf5, 0xc2, 0x66, 0x45, 0xa6, 0x6f, 0xac, 0x0a, 0xf3,
+	0x83, 0xe1, 0x30, 0x38, 0xf3, 0xe3, 0x6a, 0x51, 0x01, 0xd3, 0xd7, 0xba, 0x09, 0x78, 0x41, 0x12,
+	0x4d, 0x02, 0x3f, 0xf2, 0xd8, 0x53, 0xd0, 0xa2, 0x78, 0x10, 0x9f, 0x45, 0x8a, 0x65, 0xb9, 0x71,
+	0x7f, 0xfb, 0xbc, 0xe8, 0xf6, 0x34, 0xc8, 0x51, 0x01, 0x32, 0x0d, 0xac, 0x9b, 0xb0, 0x22, 0xbd,
+	0xd3, 0xe0, 0xb5, 0xf7, 0x76, 0x6a, 0x5a, 0xc0, 0xb2, 0x34, 0x37, 0xd7, 0xf3, 0x47, 0x01, 0x90,
+	0x8f, 0x46, 0xd2, 0x1b, 0x06, 0xe1, 0x68, 0xaa, 0x87, 0x41, 0xd9, 0x1f, 0x9c, 0x7a, 0xa9, 0x1a,
+	0x65, 0x93, 0xc6, 0x20, 0x1c, 0x9f, 0x8c, 0xfd, 0x54, 0x4a, 0xfa, 0x96, 0xd5, 0x58, 0xca, 0x69,
+	0x64, 0x1b, 0x50, 0x8e, 0xdf, 0x4c, 0xbc, 0x6a, 0x59, 0x69, 0x59, 0xc9, 0x6a, 0x91, 0xee, 0x9b,
+	0x89, 0x27, 0x15, 0xcc, 0x10, 0x4a, 0x71, 0xfc, 0xaa, 0x3a, 0xb7, 0x5e, 0xd8, 0x2c, 0x49, 0x32,
+	0x89, 0x72, 0x18, 0xf8, 0xb1, 0xe7, 0xc7, 0x55, 0x2d, 0xa1, 0x4c, 0x5f, 0xeb, 0x4d, 0x58, 0xc9,
+	0x88, 0xbd, 0x79, 0xd7, 0xbf, 0x15, 0x60, 0x35, 0x99, 0xdf, 0x7f, 0xd8, 0x78, 0xa6, 0xcd, 0xb9,
+	0x7c, 0x9b, 0x02, 0xee, 0xe4, 0xd5, 0xdd, 0xbc, 0xd3, 0x5f, 0x4b, 0xb0, 0xda, 0x9b, 0x8c, 0x06,
+	0xf1, 0xa5, 0x4e, 0x2f, 0xba, 0x2a, 0x5c, 0xd7, 0x55, 0x7e, 0xc9, 0xb1, 0x17, 0xa0, 0xc5, 0x83,
+	0xf0, 0xc4, 0x4b, 0xda, 0x5d, 0x6c, 0x6c, 0x64, 0x8a, 0xcf, 0xa8, 0xb0, 0xed, 0xaa, 0x60, 0x99,
+	0x26, 0x51, 0x7a, 0x14, 0x9c, 0x85, 0xc3, 0x64, 0x2c, 0x7f, 0x9f, 0xee, 0xa8, 0x60, 0x99, 0x26,
+	0xd5, 0x7e, 0x04, 0x2d, 0x21, 0x9c, 0xf9, 0x8d, 0xa6, 0x13, 0x2f, 0xfe, 0xe3, 0x89, 0x97, 0x72,
+	0x13, 0xaf, 0x05, 0xa0, 0x25, 0x05, 0xff, 0x15, 0xfa, 0xe9, 0x1a, 0x2f, 0x9f, 0xaf, 0x71, 0xfa,
+	0xc4, 0xf9, 0xae, 0xdf, 0x6a, 0x4b, 0x69, 0x79, 0x71, 0xc2, 0x13, 0xdd, 0xf8, 0xfb, 0xd6, 0x63,
+	0x60, 0x59, 0x9a, 0x1b, 0xeb, 0x61, 0x4f, 0x60, 0x3e, 0x4c, 0x58, 0xaa, 0xc5, 0xf5, 0xd2, 0xe6,
+	0x62, 0x7e, 0x60, 0x49, 0xbb, 0xd3, 0x88, 0xfa, 0x0f, 0xa0, 0x25, 0xae, 0x99, 0x83, 0x67, 0x99,
+	0xc1, 0x57, 0xf2, 0xfb, 0x45, 0x69, 0xe6, 0x7e, 0x51, 0xce, 0xcd, 0x7d, 0x8b, 0xc3, 0x72, 0x5e,
+	0x24, 0xd3, 0xa0, 0xd8, 0xfd, 0x19, 0x6f, 0xb1, 0x7b, 0xb0, 0x2a, 0xfc, 0xd8, 0x0b, 0xfd, 0xc1,
+	0x2b, 0xc7, 0x0b, 0x5f, 0x7b, 0xa1, 0x19, 0x86, 0x41, 0x88, 0x05, 0xb6, 0x0c, 0xb0, 0x3f, 0x98,
+	0xae, 0x42, 0x2c, 0x6e, 0xfd, 0xae, 0x81, 0x96, 0x7c, 0x65, 0x36, 0x07, 0x05, 0x8e, 0xb7, 0xd8,
+	0x02, 0x94, 0x39, 0xe7, 0x1c, 0x0b, 0xac, 0x02, 0x73, 0xbc, 0xe9, 0x18, 0xfb, 0x58, 0x64, 0xf3,
+	0x50, 0xe2, 0xd6, 0x31, 0x96, 0x14, 0xea, 0x76, 0x38, 0x96, 0x95, 0xeb, 0x48, 0xc7, 0x39, 0xe5,
+	0xea, 0x37, 0x25, 0x6a, 0xe4, 0xd2, 0x39, 0xc7, 0x79, 0xb6, 0x08, 0xf3, 0xba, 0x61, 0x39, 0x87,
+	0xe6, 0x31, 0x2e, 0x28, 0xaf, 0xe1, 0x60, 0x85, 0x02, 0x75, 0x53, 0xba, 0x08, 0xc4, 0xac, 0x5b,
+	0xbc, 0x63, 0xe2, 0xa2, 0x32, 0x9d, 0x63, 0x4b, 0xc7, 0x25, 0x32, 0x8d, 0x03, 0x5d, 0x18, 0xf8,
+	0x3f, 0xca, 0x31, 0xda, 0x47, 0xb8, 0xac, 0x7c, 0x2a, 0xf2, 0x36, 0x03, 0xd0, 0x52, 0x4e, 0xa4,
+	0x3e, 0x0d, 0x07, 0x57, 0x28, 0xce, 0x14, 0x06, 0x32, 0x8a, 0x33, 0x7b, 0x62, 0xf7, 0x39, 0xae,
+	0xa6, 0xe6, 0xde, 0x2e, 0xde, 0x21, 0xb8, 0x25, 0x0c, 0xfc, 0x3f, 0x95, 0x6e, 0xd9, 0x5d, 0x07,
+	0xef, 0x12, 0x7a, 0x20, 0xac, 0x66, 0x17, 0xef, 0x11, 0x7a, 0x20, 0x6c, 0xac, 0x12, 0x2a, 0x1c,
+	0xc3, 0xc2, 0xfb, 0xca, 0xa2, 0x5e, 0x6a, 0x04, 0x52, 0xa9, 0x07, 0x54, 0xea, 0xb0, 0x8f, 0x6b,
+	0xe4, 0x68, 0xef, 0x34, 0xf0, 0xa1, 0x32, 0xf6, 0x76, 0xf1, 0x91, 0x32, 0xba, 0x3a, 0x3e, 0xa6,
+	0x90, 0xb6, 0x8d, 0xeb, 0xc4, 0xdd, 0xe1, 0xa2, 0xcd, 0xf1, 0x9d, 0xa9, 0xb9, 0x8f, 0x75, 0x42,
+	0x3b, 0xfb, 0xf8, 0xae, 0x7a, 0x1a, 0xf8, 0x9e, 0x7a, 0x36, 0x71, 0x43, 0x3d, 0x5b, 0xf8, 0xbe,
+	0x0a, 0x55, 0x8a, 0x3e, 0x50, 0x2e, 0x89, 0x9b, 0xea, 0xd9, 0xc7, 0x0f, 0x09, 0xb2, 0xb8, 0xed,
+	0x4a, 0xdc, 0xa2, 0x62, 0x96, 0x30, 0xf0, 0x09, 0x8d, 0xc1, 0x12, 0x1d, 0x2a, 0xfc, 0x91, 0xc2,
+	0x55, 0xea, 0xc7, 0x94, 0x62, 0x39, 0xb8, 0x4d, 0x1d, 0x58, 0x8e, 0xa9, 0xe3, 0x27, 0x0a, 0x74,
+	0x4c, 0x7d, 0x07, 0x3f, 0xa5, 0xaf, 0xae, 0x4c, 0x9b, 0x4b, 0xde, 0xc1, 0xa7, 0x2a, 0xa8, 0xd7,
+	0x6e, 0x63, 0x43, 0xd1, 0xf6, 0x5d, 0xdc, 0x51, 0xae, 0xc0, 0xf7, 0x70, 0x97, 0x82, 0xbb, 0xb6,
+	0x69, 0xd9, 0x2d, 0x9b, 0x06, 0xf0, 0x8c, 0x42, 0xba, 0xb6, 0x8b, 0x7b, 0x64, 0x90, 0x96, 0xcf,
+	0xa8, 0x96, 0xdd, 0xc7, 0xe7, 0x94, 0x23, 0x29, 0xe6, 0x73, 0xf2, 0x48, 0x1b, 0xbf, 0xa0, 0x9a,
+	0x52, 0x3a, 0xa2, 0x85, 0x5f, 0x2a, 0x97, 0x8b, 0x5f, 0xb1, 0x25, 0x58, 0x90, 0x5e, 0x44, 0x8b,
+	0x70, 0x84, 0x2f, 0x88, 0x83, 0xe0, 0xaf, 0xa9, 0x0d, 0xa7, 0x23, 0x3a, 0x26, 0xc7, 0x6f, 0x94,
+	0xb3, 0xcb, 0xf1, 0x5b, 0x65, 0xd8, 0x4d, 0xe4, 0xca, 0x90, 0x47, 0xb8, 0x4f, 0x84, 0x8e, 0x73,
+	0xd0, 0xb4, 0x51, 0x27, 0x42, 0x97, 0xa3, 0x41, 0x99, 0x2e, 0x6f, 0x0b, 0xeb, 0x10, 0x4d, 0x52,
+	0xe0, 0x92, 0x82, 0xa6, 0xb2, 0xda, 0x0e, 0xc7, 0x96, 0xb2, 0xa8, 0xc6, 0x01, 0xb1, 0xb8, 0x7d,
+	0x17, 0x05, 0x19, 0x3d, 0x61, 0xe0, 0x77, 0x44, 0xd7, 0x53, 0x03, 0x3b, 0x24, 0x9a, 0x9e, 0xe5,
+	0xd8, 0xa6, 0x8e, 0x6d, 0x85, 0x4b, 0x81, 0x1d, 0x32, 0xfa, 0x8d, 0x67, 0x68, 0x91, 0x6a, 0xcb,
+	0xe1, 0xf6, 0x4b, 0x6a, 0xb8, 0xdb, 0xf8, 0xb3, 0x04, 0x8b, 0xf6, 0xc8, 0x8f, 0xe8, 0x5f, 0x1a,
+	0x0f, 0x3d, 0xa6, 0xc3, 0xc2, 0x38, 0xbd, 0x2d, 0xb1, 0x5a, 0xe6, 0xf7, 0xbf, 0x74, 0x0f, 0xab,
+	0x3d, 0x98, 0x89, 0xa5, 0x7b, 0x8f, 0x00, 0x08, 0xcf, 0x2f, 0x39, 0x6c, 0x2d, 0xb7, 0x8b, 0x5c,
+	0xba, 0x42, 0xd5, 0x1e, 0x5e, 0x83, 0xa6, 0x54, 0x4d, 0xa8, 0x0c, 0xa6, 0x17, 0x07, 0x96, 0x2d,
+	0x7a, 0xf9, 0xee, 0x53, 0x5b, 0x9b, 0x0d, 0xa6, 0x3c, 0x5d, 0x58, 0x0a, 0x33, 0x27, 0x33, 0x7b,
+	0x74, 0xa5, 0x6c, 0x9e, 0xed, 0xf1, 0xb5, 0xf8, 0x05, 0xe1, 0x59, 0xe6, 0x1c, 0xc8, 0x11, 0xce,
+	0x38, 0x16, 0x73, 0x84, 0x33, 0x0f, 0x10, 0x01, 0x70, 0x72, 0xbe, 0x8d, 0xe7, 0x86, 0x76, 0xe5,
+	0x90, 0xc8, 0x0d, 0xed, 0xea, 0xde, 0xff, 0x93, 0xa6, 0x6e, 0xd2, 0x3b, 0x7f, 0x05, 0x00, 0x00,
+	0xff, 0xff, 0xee, 0x38, 0xb6, 0xc2, 0x57, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -174,6 +1195,11 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type PdnsServiceClient interface {
 	InitZone(ctx context.Context, in *InitZoneRequest, opts ...grpc.CallOption) (*InitZoneResponse, error)
+	RemoveZone(ctx context.Context, in *RemoveZoneRequest, opts ...grpc.CallOption) (*RemoveZoneResponse, error)
+	AddRecord(ctx context.Context, in *AddRecordRequest, opts ...grpc.CallOption) (*AddRecordResponse, error)
+	RemoveRecord(ctx context.Context, in *RemoveRecordRequest, opts ...grpc.CallOption) (*RemoveRecordResponse, error)
+	UpdateRecord(ctx context.Context, in *UpdateRecordRequest, opts ...grpc.CallOption) (*UpdateRecordResponse, error)
+	GetRecords(ctx context.Context, in *GetRecordsRequest, opts ...grpc.CallOption) (*GetRecordsResponse, error)
 }
 
 type pdnsServiceClient struct {
@@ -193,9 +1219,59 @@ func (c *pdnsServiceClient) InitZone(ctx context.Context, in *InitZoneRequest, o
 	return out, nil
 }
 
+func (c *pdnsServiceClient) RemoveZone(ctx context.Context, in *RemoveZoneRequest, opts ...grpc.CallOption) (*RemoveZoneResponse, error) {
+	out := new(RemoveZoneResponse)
+	err := c.cc.Invoke(ctx, "/pdns_grpc.PdnsService/removeZone", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pdnsServiceClient) AddRecord(ctx context.Context, in *AddRecordRequest, opts ...grpc.CallOption) (*AddRecordResponse, error) {
+	out := new(AddRecordResponse)
+	err := c.cc.Invoke(ctx, "/pdns_grpc.PdnsService/addRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pdnsServiceClient) RemoveRecord(ctx context.Context, in *RemoveRecordRequest, opts ...grpc.CallOption) (*RemoveRecordResponse, error) {
+	out := new(RemoveRecordResponse)
+	err := c.cc.Invoke(ctx, "/pdns_grpc.PdnsService/removeRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pdnsServiceClient) UpdateRecord(ctx context.Context, in *UpdateRecordRequest, opts ...grpc.CallOption) (*UpdateRecordResponse, error) {
+	out := new(UpdateRecordResponse)
+	err := c.cc.Invoke(ctx, "/pdns_grpc.PdnsService/updateRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pdnsServiceClient) GetRecords(ctx context.Context, in *GetRecordsRequest, opts ...grpc.CallOption) (*GetRecordsResponse, error) {
+	out := new(GetRecordsResponse)
+	err := c.cc.Invoke(ctx, "/pdns_grpc.PdnsService/getRecords", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PdnsServiceServer is the server API for PdnsService service.
 type PdnsServiceServer interface {
 	InitZone(context.Context, *InitZoneRequest) (*InitZoneResponse, error)
+	RemoveZone(context.Context, *RemoveZoneRequest) (*RemoveZoneResponse, error)
+	AddRecord(context.Context, *AddRecordRequest) (*AddRecordResponse, error)
+	RemoveRecord(context.Context, *RemoveRecordRequest) (*RemoveRecordResponse, error)
+	UpdateRecord(context.Context, *UpdateRecordRequest) (*UpdateRecordResponse, error)
+	GetRecords(context.Context, *GetRecordsRequest) (*GetRecordsResponse, error)
 }
 
 // UnimplementedPdnsServiceServer can be embedded to have forward compatible implementations.
@@ -204,6 +1280,21 @@ type UnimplementedPdnsServiceServer struct {
 
 func (*UnimplementedPdnsServiceServer) InitZone(ctx context.Context, req *InitZoneRequest) (*InitZoneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitZone not implemented")
+}
+func (*UnimplementedPdnsServiceServer) RemoveZone(ctx context.Context, req *RemoveZoneRequest) (*RemoveZoneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveZone not implemented")
+}
+func (*UnimplementedPdnsServiceServer) AddRecord(ctx context.Context, req *AddRecordRequest) (*AddRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddRecord not implemented")
+}
+func (*UnimplementedPdnsServiceServer) RemoveRecord(ctx context.Context, req *RemoveRecordRequest) (*RemoveRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveRecord not implemented")
+}
+func (*UnimplementedPdnsServiceServer) UpdateRecord(ctx context.Context, req *UpdateRecordRequest) (*UpdateRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRecord not implemented")
+}
+func (*UnimplementedPdnsServiceServer) GetRecords(ctx context.Context, req *GetRecordsRequest) (*GetRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecords not implemented")
 }
 
 func RegisterPdnsServiceServer(s *grpc.Server, srv PdnsServiceServer) {
@@ -228,6 +1319,96 @@ func _PdnsService_InitZone_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PdnsService_RemoveZone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveZoneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PdnsServiceServer).RemoveZone(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pdns_grpc.PdnsService/RemoveZone",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PdnsServiceServer).RemoveZone(ctx, req.(*RemoveZoneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PdnsService_AddRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PdnsServiceServer).AddRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pdns_grpc.PdnsService/AddRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PdnsServiceServer).AddRecord(ctx, req.(*AddRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PdnsService_RemoveRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PdnsServiceServer).RemoveRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pdns_grpc.PdnsService/RemoveRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PdnsServiceServer).RemoveRecord(ctx, req.(*RemoveRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PdnsService_UpdateRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PdnsServiceServer).UpdateRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pdns_grpc.PdnsService/UpdateRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PdnsServiceServer).UpdateRecord(ctx, req.(*UpdateRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PdnsService_GetRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecordsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PdnsServiceServer).GetRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pdns_grpc.PdnsService/GetRecords",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PdnsServiceServer).GetRecords(ctx, req.(*GetRecordsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _PdnsService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "pdns_grpc.PdnsService",
 	HandlerType: (*PdnsServiceServer)(nil),
@@ -235,6 +1416,26 @@ var _PdnsService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "initZone",
 			Handler:    _PdnsService_InitZone_Handler,
+		},
+		{
+			MethodName: "removeZone",
+			Handler:    _PdnsService_RemoveZone_Handler,
+		},
+		{
+			MethodName: "addRecord",
+			Handler:    _PdnsService_AddRecord_Handler,
+		},
+		{
+			MethodName: "removeRecord",
+			Handler:    _PdnsService_RemoveRecord_Handler,
+		},
+		{
+			MethodName: "updateRecord",
+			Handler:    _PdnsService_UpdateRecord_Handler,
+		},
+		{
+			MethodName: "getRecords",
+			Handler:    _PdnsService_GetRecords_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

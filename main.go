@@ -23,28 +23,22 @@ var (
 var db *sql.DB
 
 func initConfig() {
-	host := os.Getenv("GRPC_HOST")
-	if host != "" {
+	if host := os.Getenv("GRPC_HOST"); host != "" {
 		pdnshost = host
 	}
-	port := os.Getenv("GRPC_PORT")
-	if port != "" {
+	if port := os.Getenv("GRPC_PORT"); port != "" {
 		pdnsport = port
 	}
-	dbhost := os.Getenv("GPGSQL_HOST")
-	if dbhost != "" {
-		psqlhost = dbhost
+	if host := os.Getenv("GPGSQL_HOST"); host != "" {
+		psqlhost = host
 	}
-	name := os.Getenv("GPGSQL_DBNAME")
-	if name != "" {
+	if name := os.Getenv("GPGSQL_DBNAME"); name != "" {
 		psqlname = name
 	}
-	user := os.Getenv("GPGSQL_USER")
-	if user != "" {
+	if user := os.Getenv("GPGSQL_USER"); user != "" {
 		psqluser = user
 	}
-	pass := os.Getenv("GPGSQL_PASSWORD")
-	if pass != "" {
+	if pass := os.Getenv("GPGSQL_PASSWORD"); pass != "" {
 		psqlpass = pass
 	}
 }
