@@ -6,6 +6,7 @@ service PdnsService {
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
   rpc removeRecord (RemoveRecordRequest) returns (RemoveRecordResponse);
+  rpc updateRecord (UpdateRecordRequest) returns (UpdateRecordResponse);
   rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
 }
 
@@ -40,6 +41,28 @@ message RemoveRecordRequest {
 }
 
 message RemoveRecordResponse {
+  ResponseStatus status=1;
+}
+
+message UpdateRecordRequest {
+  string origin=1;
+  string account=2;
+  Target target=3;
+  Source source=4;
+  message Target {
+    string name=1;
+    RRType type=2;
+    string content=3;
+  }
+  message Source {
+    string name=1;
+    RRType type=2;
+    string content=3;
+    int64 ttl=4;
+  }
+}
+
+message UpdateRecordResponse {
   ResponseStatus status=1;
 }
 

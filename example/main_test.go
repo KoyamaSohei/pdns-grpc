@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"testing"
@@ -113,4 +114,26 @@ func TestRemoveRecord(t *testing.T) {
 	_, err = c.RemoveRecord(ctx, &pb.RemoveRecordRequest{Name: "example4.com", Origin: "example4.com", Account: "testuser", Type: pb.RRType_A, Content: "11.11.11.11"})
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com", Account: "testuser"})
 	assert.Equal(t, len(r.GetRecords()), 0)
+}
+
+func TestUpdateRecord(t *testing.T) {
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example5.com", Account: "testuser"})
+	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example5.com", Origin: "example5.com", Account: "testuser", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
+	_, err = c.UpdateRecord(ctx,
+		&pb.UpdateRecordRequest{
+			Origin: "example5.com", Account: "testuser",
+			Target: &pb.UpdateRecordRequest_Target{Name: "example5.com", Type: pb.RRType_A, Content: "11.11.11.11"},
+			Source: &pb.UpdateRecordRequest_Source{Name: "example5.com", Type: pb.RRType_A, Content: "22.22.22.22", Ttl: 9999}})
+	fmt.Println(err)
+	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example5.com", Account: "testuser"})
+	assert.Equal(t, len(r.GetRecords()), 1)
+	assert.Equal(t, r.GetRecords()[0].Content, "22.22.22.22")
 }
