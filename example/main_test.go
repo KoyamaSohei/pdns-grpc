@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"testing"
@@ -29,15 +28,11 @@ func TestInitZone(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if status := r.GetStatus(); status != pb.ResponseStatus_Ok {
-		log.Println(status)
-		return
-	}
+	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_Ok)
 	address, err := net.ResolveIPAddr("ip", "pdns")
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(address.IP.String())
 	cl := dns.Client{}
 	m := dns.Msg{}
 	m.SetQuestion("example.com.", dns.TypeSOA)
@@ -46,7 +41,7 @@ func TestInitZone(t *testing.T) {
 		log.Fatal(err)
 	}
 	a := res.Answer[0].(*dns.SOA)
-	log.Println(a.String())
+	assert.Equal(t, a.Hdr.Name, "example.com.")
 }
 
 func TestAddRecord(t *testing.T) {
@@ -63,11 +58,7 @@ func TestAddRecord(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if status := r.GetStatus(); status != pb.ResponseStatus_Ok {
-		log.Println(status)
-		return
-	}
-	time.Sleep(time.Second)
+	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_Ok)
 	address, err := net.ResolveIPAddr("ip", "pdns")
 	cl := dns.Client{}
 	m := dns.Msg{}
@@ -76,10 +67,7 @@ func TestAddRecord(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(res.Answer) == 0 {
-		log.Println(res)
-		log.Fatalln("record not found")
-	}
+	assert.Equal(t, len(res.Answer), 1)
 	a := res.Answer[0].(*dns.A)
 	assert.Equal(t, a.A.String(), "21.21.21.21")
 }
@@ -132,7 +120,6 @@ func TestUpdateRecord(t *testing.T) {
 			Origin: "example5.com", Account: "testuser",
 			Target: &pb.UpdateRecordRequest_Target{Name: "example5.com", Type: pb.RRType_A, Content: "11.11.11.11"},
 			Source: &pb.UpdateRecordRequest_Source{Name: "example5.com", Type: pb.RRType_A, Content: "22.22.22.22", Ttl: 9999}})
-	fmt.Println(err)
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example5.com", Account: "testuser"})
 	assert.Equal(t, len(r.GetRecords()), 1)
 	assert.Equal(t, r.GetRecords()[0].Content, "22.22.22.22")
