@@ -166,6 +166,31 @@ func (s *server) RemoveRecord(ctx context.Context, in *pb.RemoveRecordRequest) (
 	return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_Ok}, nil
 }
 
+func (s *server) UpdateRecord(ctx context.Context, in *pb.UpdateRecordRequest) (*pb.UpdateRecordResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	if err != nil {
+		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
+	}
+	t := in.GetTarget()
+	c := in.GetSource()
+	_, err = tx.ExecContext(ctx, "UPDATE records SET name = $1, type = $2, ttl = $3, content = $4 WHERE name = $5 AND type = $6 AND content = $7 AND domain_id = $8;",
+		c.GetName(), c.GetType().String(), c.GetTtl(), c.GetContent(), t.GetName(), t.GetType().String(), t.GetContent(), id)
+	if err != nil {
+		tx.Rollback()
+		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_Ok}, nil
+}
+
 func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.GetRecordsResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
