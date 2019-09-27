@@ -109,6 +109,33 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 
 }
 
+func (s *server) RemoveZone(ctx context.Context, in *pb.RemoveZoneRequest) (*pb.RemoveZoneResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetDomain(), in.GetAccount())
+	if err != nil {
+		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_BadRequest}, nil
+	}
+	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1;", id)
+	if err != nil {
+		tx.Rollback()
+		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, nil
+	}
+	_, err = tx.ExecContext(ctx, "DELETE FROM domains WHERE id = $1;", id)
+	if err != nil {
+		tx.Rollback()
+		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, nil
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, nil
+	}
+	return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_Ok}, nil
+}
+
 func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.AddRecordResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {

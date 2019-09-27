@@ -4,6 +4,7 @@ package pdns_grpc;
 
 service PdnsService {
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
+  rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
   rpc removeRecord (RemoveRecordRequest) returns (RemoveRecordResponse);
   rpc updateRecord (UpdateRecordRequest) returns (UpdateRecordResponse);
@@ -16,6 +17,15 @@ message InitZoneRequest {
 }
 
 message InitZoneResponse {
+  ResponseStatus status=1;
+}
+
+message RemoveZoneRequest {
+  string domain=1;
+  string account=2;
+}
+
+message RemoveZoneResponse {
   ResponseStatus status=1;
 }
 
