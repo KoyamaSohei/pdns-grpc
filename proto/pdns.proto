@@ -3,6 +3,7 @@ syntax = "proto3";
 package pdns_grpc;
 
 service PdnsService {
+  rpc createAccount (CreateAccountRequest) returns (CreateAccountResponse);
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
@@ -11,9 +12,24 @@ service PdnsService {
   rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
 }
 
+message CreateAccountRequest {
+  string email=1;
+  string password=2;
+}
+
+message CreateAccountResponse {
+  enum Status {
+    Ok = 0;
+    InternalServerError = 1;
+    BadRequest = 2;
+    AlreadyExists = 3;
+  } 
+  Status status=1;
+  string token=2;
+}
+
 message InitZoneRequest {
   string domain=1;
-  string account=2;
 }
 
 message InitZoneResponse {
@@ -22,7 +38,6 @@ message InitZoneResponse {
 
 message RemoveZoneRequest {
   string domain=1;
-  string account=2;
 }
 
 message RemoveZoneResponse {
@@ -32,10 +47,9 @@ message RemoveZoneResponse {
 message AddRecordRequest {
   string name=1;
   string origin=2;
-  string account=3;
-  RRType type=4;
-  int64 ttl=5;
-  string content=6;
+  RRType type=3;
+  int64 ttl=4;
+  string content=5;
 }
 
 message AddRecordResponse {
@@ -45,9 +59,8 @@ message AddRecordResponse {
 message RemoveRecordRequest {
   string name=1;
   string origin=2;
-  string account=3;
-  RRType type=4;
-  string content=5;
+  RRType type=3;
+  string content=4;
 }
 
 message RemoveRecordResponse {
@@ -56,9 +69,8 @@ message RemoveRecordResponse {
 
 message UpdateRecordRequest {
   string origin=1;
-  string account=2;
-  Target target=3;
-  Source source=4;
+  Target target=2;
+  Source source=3;
   message Target {
     string name=1;
     RRType type=2;
@@ -78,7 +90,6 @@ message UpdateRecordResponse {
 
 message GetRecordsRequest {
   string origin=1;
-  string account=2;
 }
 
 message GetRecordsResponse {
