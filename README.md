@@ -2,6 +2,8 @@
 
 Manage DNS Resource Record with PowerDNS, gRPC, and PostgreSQL.
 
+![](https://github.com/KoyamaSohei/pdns-grpc/workflows/main/badge.svg)
+
 ## Usage
 
 ### docker-compose 
