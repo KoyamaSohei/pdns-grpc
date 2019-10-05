@@ -8,6 +8,7 @@ import (
 	"os"
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"google.golang.org/grpc"
 )
 
@@ -57,12 +58,16 @@ func GetDB() *sql.DB {
 
 func main() {
 	initConfig()
+	InitJWTAuth()
 	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	log.Printf("listening on %s:%s", pdnshost, pdnsport)
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.StreamInterceptor(grpc_auth.StreamServerInterceptor(AuthHandler)),
+		grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(AuthHandler)),
+	)
 	pb.RegisterPdnsServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
