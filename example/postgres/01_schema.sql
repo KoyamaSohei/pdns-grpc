@@ -96,8 +96,4 @@ CREATE TABLE tsigkeys (
 
 CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);
 
--- sample
 
-INSERT INTO domains (name,type,master) VALUES ('example.net', 'MASTER', '198.51.100.101');
-INSERT INTO records (domain_id,name,type,content,change_date) VALUES (1,'example.net','SOA','ns.example.net mail.example.net 190923 60 60 60 60',190923);
-INSERT INTO records (domain_id,name,type,content,change_date) VALUES (1,'example.net','A','12.34.12.34',190923);
