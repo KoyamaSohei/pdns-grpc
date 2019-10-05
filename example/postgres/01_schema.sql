@@ -7,7 +7,7 @@ CREATE TABLE domains (
   last_check            INT DEFAULT NULL,
   type                  VARCHAR(6) NOT NULL,
   notified_serial       INT DEFAULT NULL,
-  account               VARCHAR(40) DEFAULT NULL,
+  account               SERIAL,
   CONSTRAINT c_lowercase_name CHECK (((name)::TEXT = LOWER((name)::TEXT)))
 );
 
@@ -96,4 +96,10 @@ CREATE TABLE tsigkeys (
 
 CREATE UNIQUE INDEX namealgoindex ON tsigkeys(name, algorithm);
 
+CREATE EXTENSION pgcrypto;
 
+CREATE TABLE accounts (
+  id                    SERIAL PRIMARY KEY,
+  email                 VARCHAR(40) NOT NULL UNIQUE,
+  password              TEXT NOT NULL
+);

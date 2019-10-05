@@ -30,12 +30,23 @@ func genSerial() int {
 	return (int)(time.Now().Unix() % 10000)
 }
 
+func getAccountId(tx *sql.Tx, ctx context.Context) (string, error) {
+	info, err := getInfo(ctx)
+	if err != nil {
+		return "", err
+	}
+	var id string
+	err = tx.QueryRowContext(ctx, "SELECT id FROM accounts WHERE email = $1;", info.Subject).Scan(&id)
+	if err != nil {
+		return "", err
+	}
+	return id, nil
+}
+
 func getDomainId(tx *sql.Tx, ctx context.Context, name string, account string) (string, error) {
 	var id string
 	err := tx.QueryRowContext(ctx, "SELECT id FROM domains WHERE name = $1 AND account = $2;", name, account).Scan(&id)
 	if err != nil {
-		log.Println("get domain id: " + name)
-		log.Println(err)
 		return "", err
 	}
 	return id, nil
@@ -69,12 +80,51 @@ func updateSoa(tx *sql.Tx, ctx context.Context, origin string, account string) e
 	return err
 }
 
+func (s *server) CreateAccount(ctx context.Context, in *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error) {
+	email := in.GetEmail()
+	pass := in.GetPassword()
+	if email == "" || pass == "" {
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_BadRequest}, nil
+	}
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_InternalServerError}, err
+	}
+
+	var id string
+	err = tx.QueryRowContext(ctx, "SELECT id FROM accounts WHERE email = $1;", email).Scan(&id)
+	if err == nil {
+		_ = tx.Rollback()
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_AlreadyExists}, nil
+	}
+
+	_, err = tx.ExecContext(ctx, "INSERT INTO accounts(email,password) VALUES ($1,crypt($2, gen_salt('bf')));", email, pass)
+	if err != nil {
+		_ = tx.Rollback()
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_InternalServerError}, err
+	}
+	token, err := authInstance.GenerateJWTToken(email)
+	if err != nil {
+		return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_InternalServerError}, err
+	}
+	return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_Ok, Token: token}, nil
+}
+
 func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.InitZoneResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetDomain(), in.GetAccount())
+	a, err := getAccountId(tx, ctx)
+	if err != nil {
+		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetDomain(), a)
+
 	if err == nil {
 		_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1;", id)
 		if err != nil {
@@ -82,14 +132,14 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 			return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 		}
 	} else {
-		_, err = tx.ExecContext(ctx, "INSERT INTO domains(name,type,account) VALUES ($1,'master',$2);", in.GetDomain(), in.GetAccount())
+		_, err = tx.ExecContext(ctx, "INSERT INTO domains(name,type,account) VALUES ($1,'master',$2);", in.GetDomain(), a)
 	}
 
 	if err != nil {
 		tx.Rollback()
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err = getDomainId(tx, ctx, in.GetDomain(), in.GetAccount())
+	id, err = getDomainId(tx, ctx, in.GetDomain(), a)
 	if err != nil {
 		tx.Rollback()
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
@@ -114,7 +164,8 @@ func (s *server) RemoveZone(ctx context.Context, in *pb.RemoveZoneRequest) (*pb.
 	if err != nil {
 		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetDomain(), in.GetAccount())
+	a, err := getAccountId(tx, ctx)
+	id, err := getDomainId(tx, ctx, in.GetDomain(), a)
 	if err != nil {
 		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_BadRequest}, nil
 	}
@@ -141,7 +192,10 @@ func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.Ad
 	if err != nil {
 		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a := in.GetAccount()
+	a, err := getAccountId(tx, ctx)
+	if err != nil {
+		return nil, err
+	}
 	o := in.GetOrigin()
 	id, err := getDomainId(tx, ctx, o, a)
 	if err != nil {
@@ -177,7 +231,11 @@ func (s *server) RemoveRecord(ctx context.Context, in *pb.RemoveRecordRequest) (
 	if err != nil {
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	a, err := getAccountId(tx, ctx)
+	if err != nil {
+		return nil, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
@@ -198,7 +256,11 @@ func (s *server) UpdateRecord(ctx context.Context, in *pb.UpdateRecordRequest) (
 	if err != nil {
 		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	a, err := getAccountId(tx, ctx)
+	if err != nil {
+		return nil, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
@@ -223,7 +285,11 @@ func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.
 	if err != nil {
 		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), in.GetAccount())
+	a, err := getAccountId(tx, ctx)
+	if err != nil {
+		return nil, err
+	}
+	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
