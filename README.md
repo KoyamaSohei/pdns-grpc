@@ -8,7 +8,7 @@ Manage DNS Resource Record with PowerDNS, gRPC, and PostgreSQL.
 
 ### docker-compose 
 
-Please check [example](https://github.com/KoyamaSohei/pdns-grpc/tree/master/example)
+Please check [testing](https://github.com/KoyamaSohei/pdns-grpc/tree/master/testing)
 
 ## Environment Variables
 
