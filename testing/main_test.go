@@ -28,6 +28,9 @@ func TestInitZone(t *testing.T) {
 	defer cancel()
 
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,6 +69,9 @@ func TestAddRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example2.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,6 +107,9 @@ func TestGetRecords(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example3.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -124,6 +133,9 @@ func TestRemoveRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example4.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -147,6 +159,9 @@ func TestUpdateRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example5.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -175,6 +190,9 @@ func TestRemoveZone(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example6.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
