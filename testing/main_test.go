@@ -17,6 +17,7 @@ import (
 // test on ./example/docker-compose up.
 
 func TestInitZone(t *testing.T) {
+	log.Println("TestInitZone")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -55,6 +56,7 @@ func TestInitZone(t *testing.T) {
 }
 
 func TestAddRecord(t *testing.T) {
+	log.Println("TestAddRecord")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -89,6 +91,7 @@ func TestAddRecord(t *testing.T) {
 }
 
 func TestGetRecords(t *testing.T) {
+	log.Println("TestGetRecords")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -111,6 +114,7 @@ func TestGetRecords(t *testing.T) {
 }
 
 func TestRemoveRecord(t *testing.T) {
+	log.Println("TestRemoveRecord")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -133,6 +137,7 @@ func TestRemoveRecord(t *testing.T) {
 }
 
 func TestUpdateRecord(t *testing.T) {
+	log.Println("TestUpdateRecord")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -160,6 +165,7 @@ func TestUpdateRecord(t *testing.T) {
 }
 
 func TestRemoveZone(t *testing.T) {
+	log.Println("TestRemoveZone")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
