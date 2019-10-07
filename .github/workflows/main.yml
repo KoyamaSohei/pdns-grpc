@@ -11,3 +11,5 @@ jobs:
       run: cd testing && docker-compose up --build -d
     - name: Test
       run: cd testing && docker-compose exec -T grpc go test ./testing
+    - name: Test2
+      run: cd testing && docker-compose exec -T grpc go clean -testcache && docker-compose exec -T grpc go test ./testing
