@@ -7,8 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-go@v1
+    - name: Install
+      run: go get -u golang.org/x/lint/golint
+    - name: Search
+      run: go list -f {{.Target}} golang.org/x/lint/golint
     - name: Lint
-      run: go get -u golang.org/x/lint/golint && golint -set_exit_status main
+      run: golint -set_exit_status main
   test:
     runs-on: ubuntu-latest
     steps:
