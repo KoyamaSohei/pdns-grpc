@@ -44,6 +44,7 @@ func initConfig() {
 	}
 }
 
+// GetDB get db
 func GetDB() *sql.DB {
 	if db == nil {
 		dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=%s", psqluser, psqlpass, psqlname, psqlhost)
