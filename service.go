@@ -30,7 +30,7 @@ func genSerial() int {
 	return (int)(time.Now().Unix() % 10000)
 }
 
-func getAccountId(tx *sql.Tx, ctx context.Context) (string, error) {
+func getAccountID(ctx context.Context, tx *sql.Tx) (string, error) {
 	info, err := getInfo(ctx)
 	if err != nil {
 		return "", err
@@ -43,7 +43,7 @@ func getAccountId(tx *sql.Tx, ctx context.Context) (string, error) {
 	return id, nil
 }
 
-func getDomainId(tx *sql.Tx, ctx context.Context, name string, account string) (string, error) {
+func getDomainID(ctx context.Context, tx *sql.Tx, name string, account string) (string, error) {
 	var id string
 	err := tx.QueryRowContext(ctx, "SELECT id FROM domains WHERE name = $1 AND account = $2;", name, account).Scan(&id)
 	if err != nil {
@@ -52,8 +52,8 @@ func getDomainId(tx *sql.Tx, ctx context.Context, name string, account string) (
 	return id, nil
 }
 
-func updateSoa(tx *sql.Tx, ctx context.Context, origin string, account string) error {
-	id, err := getDomainId(tx, ctx, origin, account)
+func updateSoa(ctx context.Context, tx *sql.Tx, origin string, account string) error {
+	id, err := getDomainID(ctx, tx, origin, account)
 	var c string
 	err = tx.QueryRowContext(ctx, "SELECT content FROM records WHERE type = 'SOA' AND domain_id = $1;", id).Scan(&c)
 	if err != nil {
@@ -71,7 +71,7 @@ func updateSoa(tx *sql.Tx, ctx context.Context, origin string, account string) e
 	if err != nil {
 		se = genSerial()
 	}
-	se += 1
+	se++
 	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1 AND type = 'SOA';", id)
 	if err != nil {
 		return err
@@ -119,11 +119,11 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 	if err != nil {
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
+	a, err := getAccountID(ctx, tx)
 	if err != nil {
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetDomain(), a)
+	id, err := getDomainID(ctx, tx, in.GetDomain(), a)
 
 	if err == nil {
 		_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1;", id)
@@ -139,7 +139,7 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 		tx.Rollback()
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	id, err = getDomainId(tx, ctx, in.GetDomain(), a)
+	id, err = getDomainID(ctx, tx, in.GetDomain(), a)
 	if err != nil {
 		tx.Rollback()
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
@@ -164,8 +164,8 @@ func (s *server) RemoveZone(ctx context.Context, in *pb.RemoveZoneRequest) (*pb.
 	if err != nil {
 		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
-	id, err := getDomainId(tx, ctx, in.GetDomain(), a)
+	a, err := getAccountID(ctx, tx)
+	id, err := getDomainID(ctx, tx, in.GetDomain(), a)
 	if err != nil {
 		return &pb.RemoveZoneResponse{Status: pb.ResponseStatus_BadRequest}, nil
 	}
@@ -192,12 +192,12 @@ func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.Ad
 	if err != nil {
 		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
+	a, err := getAccountID(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
 	o := in.GetOrigin()
-	id, err := getDomainId(tx, ctx, o, a)
+	id, err := getDomainID(ctx, tx, o, a)
 	if err != nil {
 		tx.Rollback()
 		return &pb.AddRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
@@ -212,7 +212,7 @@ func (s *server) AddRecord(ctx context.Context, in *pb.AddRecordRequest) (*pb.Ad
 		tx.Rollback()
 		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	err = updateSoa(tx, ctx, o, a)
+	err = updateSoa(ctx, tx, o, a)
 	if err != nil {
 		tx.Rollback()
 		return &pb.AddRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
@@ -231,11 +231,11 @@ func (s *server) RemoveRecord(ctx context.Context, in *pb.RemoveRecordRequest) (
 	if err != nil {
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
+	a, err := getAccountID(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
+	id, err := getDomainID(ctx, tx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
@@ -256,11 +256,11 @@ func (s *server) UpdateRecord(ctx context.Context, in *pb.UpdateRecordRequest) (
 	if err != nil {
 		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
+	a, err := getAccountID(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
+	id, err := getDomainID(ctx, tx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
@@ -285,11 +285,11 @@ func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.
 	if err != nil {
 		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	a, err := getAccountId(tx, ctx)
+	a, err := getAccountID(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
-	id, err := getDomainId(tx, ctx, in.GetOrigin(), a)
+	id, err := getDomainID(ctx, tx, in.GetOrigin(), a)
 	if err != nil {
 		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}

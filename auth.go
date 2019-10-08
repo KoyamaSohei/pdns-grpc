@@ -18,6 +18,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+//JWTAuth is keys to generate token
 type JWTAuth struct {
 	PrivateKey *rsa.PrivateKey
 	PublicKey  *rsa.PublicKey
@@ -25,6 +26,7 @@ type JWTAuth struct {
 
 var authInstance *JWTAuth = nil
 
+// InitJWTAuth sets authInstance
 func InitJWTAuth() *JWTAuth {
 	if authInstance == nil {
 		authInstance = &JWTAuth{
@@ -94,6 +96,7 @@ func getPublicKey() *rsa.PublicKey {
 	return rsaPub
 }
 
+// GenerateJWTToken generates token
 func (auth *JWTAuth) GenerateJWTToken(id string) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
 	token.Claims = jwt.MapClaims{
@@ -112,10 +115,12 @@ type contextKey string
 
 const tokenContextKey contextKey = "token"
 
+// SetToken sets token to context
 func SetToken(parents context.Context, t string) context.Context {
 	return context.WithValue(parents, tokenContextKey, t)
 }
 
+// GetToken gets token from context
 func GetToken(ctx context.Context) (string, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok || len(md.Get("token")) != 1 {
@@ -125,6 +130,7 @@ func GetToken(ctx context.Context) (string, error) {
 	return token, nil
 }
 
+// JwtInfo is Claims struct
 type JwtInfo struct {
 	ExpiresAt int64  `json:"exp,omitempty"`
 	IssuedAt  int64  `json:"iat,omitempty"`
@@ -164,6 +170,11 @@ func getInfo(ctx context.Context) (*JwtInfo, error) {
 	return info, nil
 }
 
+type tk string
+
+const k tk = "token"
+
+// AuthHandler judges token is valid
 func AuthHandler(ctx context.Context) (context.Context, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	v := md.Get("token")
@@ -180,6 +191,6 @@ func AuthHandler(ctx context.Context) (context.Context, error) {
 		return nil, err
 	}
 
-	newCtx := context.WithValue(ctx, "token", token)
+	newCtx := context.WithValue(ctx, k, token)
 	return newCtx, nil
 }
