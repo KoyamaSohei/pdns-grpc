@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package pdns_grpc;
 
+import "google/protobuf/empty.proto";
+
 service PdnsService {
   rpc createAccount (CreateAccountRequest) returns (CreateAccountResponse);
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
@@ -9,6 +11,7 @@ service PdnsService {
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
   rpc removeRecord (RemoveRecordRequest) returns (RemoveRecordResponse);
   rpc updateRecord (UpdateRecordRequest) returns (UpdateRecordResponse);
+  rpc getDomains (google.protobuf.Empty) returns (GetDomainsResponse);
   rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
 }
 
@@ -86,6 +89,16 @@ message UpdateRecordRequest {
 
 message UpdateRecordResponse {
   ResponseStatus status=1;
+}
+
+message GetDomainsResponse {
+  ResponseStatus status=1;
+  repeated Domain domains=2;
+}
+
+message Domain {
+  int64 id=1;
+  string name=2;
 }
 
 message GetRecordsRequest {
