@@ -12,6 +12,7 @@ import (
 	"time"
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	_ "github.com/lib/pq"
 )
 
@@ -278,6 +279,38 @@ func (s *server) UpdateRecord(ctx context.Context, in *pb.UpdateRecordRequest) (
 		return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
 	return &pb.UpdateRecordResponse{Status: pb.ResponseStatus_Ok}, nil
+}
+
+func (s *server) GetDomains(ctx context.Context, in *empty.Empty) (*pb.GetDomainsResponse, error) {
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.GetDomainsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	a, err := getAccountID(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := GetDB().QueryContext(ctx, "SELECT id,name FROM domains WHERE account = $1;", a)
+	if err != nil {
+		tx.Rollback()
+		return &pb.GetDomainsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	li := make([]*pb.Domain, 0, 10)
+	for rows.Next() {
+		item := new(pb.Domain)
+		err := rows.Scan(&item.Id, &item.Name)
+		if err != nil {
+			tx.Rollback()
+			return &pb.GetDomainsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+		}
+		li = append(li, item)
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return &pb.GetDomainsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.GetDomainsResponse{Status: pb.ResponseStatus_Ok, Domains: li}, nil
 }
 
 func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.GetRecordsResponse, error) {

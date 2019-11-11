@@ -8,6 +8,7 @@ import (
 	"time"
 
 	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -206,4 +207,30 @@ func TestRemoveZone(t *testing.T) {
 	_, err = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example6.com"})
 	r, err = c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example6.com"})
 	assert.Equal(t, len(r.GetRecords()), 0)
+}
+
+func TestGetDomains(t *testing.T) {
+	log.Println("TestGetDomains")
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example7.com", Password: "changeme"})
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	token := re.GetToken()
+	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example7.com"})
+	r, err := c.GetDomains(ctx, &empty.Empty{})
+	assert.Equal(t, len(r.GetDomains()), 1)
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example77.com"})
+	r, err = c.GetDomains(ctx, &empty.Empty{})
+	assert.Equal(t, len(r.GetDomains()), 2)
 }
