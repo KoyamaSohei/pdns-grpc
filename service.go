@@ -327,6 +327,10 @@ func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.
 		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
 	rows, err := GetDB().QueryContext(ctx, "SELECT name,type,content,ttl FROM records WHERE domain_id = $1 AND type != 'SOA';", id)
+	if err != nil {
+		tx.Rollback()
+		return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
 	li := make([]*pb.Record, 0, 10)
 	for rows.Next() {
 		item := new(pb.Record)
