@@ -17,6 +17,20 @@ import (
 
 // test on ./example/docker-compose up.
 
+func TestPing(t *testing.T) {
+	log.Println("TestPing")
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.Ping(ctx, &pb.Ping{Text: "Bob"})
+	assert.Equal(t, r.GetText(), "hello, Bob")
+}
+
 func TestInitZone(t *testing.T) {
 	log.Println("TestInitZone")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
