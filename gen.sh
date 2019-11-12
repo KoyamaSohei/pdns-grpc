@@ -1,0 +1,1 @@
+protoc -I proto proto/pdns.proto --go_out=plugins=grpc:proto
