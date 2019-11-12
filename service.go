@@ -81,6 +81,11 @@ func updateSoa(ctx context.Context, tx *sql.Tx, origin string, account string) e
 	return err
 }
 
+func (s *server) Ping(ctx context.Context, in *pb.Ping) (*pb.Pong, error) {
+	t := fmt.Sprintf("hello, %s", in.GetText())
+	return &pb.Pong{Text: t}, nil
+}
+
 func (s *server) CreateAccount(ctx context.Context, in *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error) {
 	email := in.GetEmail()
 	pass := in.GetPassword()

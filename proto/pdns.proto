@@ -5,6 +5,7 @@ package pdns_grpc;
 import "google/protobuf/empty.proto";
 
 service PdnsService {
+  rpc ping(Ping) returns (Pong);
   rpc createAccount (CreateAccountRequest) returns (CreateAccountResponse);
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
@@ -13,6 +14,14 @@ service PdnsService {
   rpc updateRecord (UpdateRecordRequest) returns (UpdateRecordResponse);
   rpc getDomains (google.protobuf.Empty) returns (GetDomainsResponse);
   rpc getRecords (GetRecordsRequest) returns (GetRecordsResponse);
+}
+
+message Ping {
+  string text=1;
+}
+
+message Pong {
+  string text=1;
 }
 
 message CreateAccountRequest {
