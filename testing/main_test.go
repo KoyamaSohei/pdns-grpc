@@ -44,6 +44,8 @@ func TestGetToken(t *testing.T) {
 	_, err = c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "foo.example.com", Password: "changeme"})
 	r, err := c.GetToken(ctx, &pb.GetTokenRequest{Email: "foo.example.com", Password: "changeme"})
 	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_Ok)
+	r, err = c.GetToken(ctx, &pb.GetTokenRequest{Email: "foo.example.com", Password: "changeme2"})
+	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_BadRequest)
 }
 
 func TestInitZone(t *testing.T) {
