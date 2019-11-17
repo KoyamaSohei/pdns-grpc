@@ -296,6 +296,8 @@ func TestChangePassword(t *testing.T) {
 	assert.Equal(t, r0.GetStatus(), pb.ResponseStatus_Ok)
 	r, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme3"})
 	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_BadRequest)
-	r2, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
-	assert.Equal(t, r2.GetStatus(), pb.ResponseStatus_Ok)
+	r2, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme"})
+	assert.Equal(t, r2.GetStatus(), pb.ResponseStatus_BadRequest)
+	r3, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
+	assert.Equal(t, r3.GetStatus(), pb.ResponseStatus_Ok)
 }
