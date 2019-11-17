@@ -130,12 +130,15 @@ func (s *server) GetToken(ctx context.Context, in *pb.GetTokenRequest) (*pb.GetT
 	if err != nil {
 		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	var id string
-	err = tx.QueryRowContext(ctx, "SELECT id FROM accounts WHERE email = $1 AND password = $2;", email, pass).Scan(&id)
-
+	var valid bool
+	err = tx.QueryRowContext(ctx, "SELECT (password = crypt($1,password)) AS matched FROM accounts WHERE email = $2;", pass, email).Scan(&valid)
 	if err != nil {
 		_ = tx.Rollback()
 		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	if !valid {
+		_ = tx.Rollback()
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
 	err = tx.Commit()
 	if err != nil {
