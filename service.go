@@ -120,6 +120,36 @@ func (s *server) CreateAccount(ctx context.Context, in *pb.CreateAccountRequest)
 	return &pb.CreateAccountResponse{Status: pb.CreateAccountResponse_Ok, Token: token}, nil
 }
 
+func (s *server) GetToken(ctx context.Context, in *pb.GetTokenRequest) (*pb.GetTokenResponse, error) {
+	email := in.GetEmail()
+	pass := in.GetPassword()
+	if email == "" || pass == "" {
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_BadRequest}, nil
+	}
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	var id string
+	err = tx.QueryRowContext(ctx, "SELECT id FROM accounts WHERE email = $1 AND password = $2;", email, pass).Scan(&id)
+
+	if err != nil {
+		_ = tx.Rollback()
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		_ = tx.Rollback()
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	token, err := authInstance.GenerateJWTToken(email)
+	if err != nil {
+		_ = tx.Rollback()
+		return &pb.GetTokenResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.GetTokenResponse{Status: pb.ResponseStatus_Ok, Token: token}, nil
+}
+
 func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.InitZoneResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
