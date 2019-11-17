@@ -166,7 +166,7 @@ func (s *server) ChangePassword(ctx context.Context, in *pb.ChangePasswordReques
 	if err != nil {
 		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	_, err = tx.ExecContext(ctx, "UPDATE accounts SET password = $1 WHERE id = $2;", pass, a)
+	_, err = tx.ExecContext(ctx, "UPDATE accounts SET password = crypt($1, gen_salt('bf')) WHERE id = $2;", pass, a)
 	if err != nil {
 		tx.Rollback()
 		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
