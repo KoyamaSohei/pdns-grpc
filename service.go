@@ -164,6 +164,7 @@ func (s *server) ChangePassword(ctx context.Context, in *pb.ChangePasswordReques
 	}
 	a, err := getAccountID(ctx, tx)
 	if err != nil {
+		_ = tx.Rollback()
 		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
 	_, err = tx.ExecContext(ctx, "UPDATE accounts SET password = crypt($1, gen_salt('bf')) WHERE id = $2;", pass, a)
@@ -171,7 +172,7 @@ func (s *server) ChangePassword(ctx context.Context, in *pb.ChangePasswordReques
 		tx.Rollback()
 		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
-	err = tx.Rollback()
+	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
 		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
