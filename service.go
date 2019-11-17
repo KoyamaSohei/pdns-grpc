@@ -153,6 +153,33 @@ func (s *server) GetToken(ctx context.Context, in *pb.GetTokenRequest) (*pb.GetT
 	return &pb.GetTokenResponse{Status: pb.ResponseStatus_Ok, Token: token}, nil
 }
 
+func (s *server) ChangePassword(ctx context.Context, in *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	pass := in.GetPass()
+	if pass == "" {
+		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_BadRequest}, nil
+	}
+	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	a, err := getAccountID(ctx, tx)
+	if err != nil {
+		_ = tx.Rollback()
+		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	_, err = tx.ExecContext(ctx, "UPDATE accounts SET password = crypt($1, gen_salt('bf')) WHERE id = $2;", pass, a)
+	if err != nil {
+		tx.Rollback()
+		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
+	return &pb.ChangePasswordResponse{Status: pb.ResponseStatus_Ok}, nil
+}
+
 func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.InitZoneResponse, error) {
 	tx, err := GetDB().BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {

@@ -8,6 +8,7 @@ service PdnsService {
   rpc ping(Ping) returns (Pong);
   rpc createAccount (CreateAccountRequest) returns (CreateAccountResponse);
   rpc getToken (getTokenRequest) returns (getTokenResponse);
+  rpc changePassword (changePasswordRequest) returns (changePasswordResponse);
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
@@ -49,6 +50,14 @@ message getTokenRequest {
 message getTokenResponse {
   ResponseStatus status=1;
   string token=2;
+}
+
+message changePasswordRequest {
+  string pass=1;
+}
+
+message changePasswordResponse {
+  ResponseStatus status=1;
 }
 
 message InitZoneRequest {

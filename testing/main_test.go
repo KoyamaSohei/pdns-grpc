@@ -265,3 +265,39 @@ func TestGetDomains(t *testing.T) {
 	r, err = c.GetDomains(ctx, &empty.Empty{})
 	assert.Equal(t, len(r.GetDomains()), 2)
 }
+
+func TestChangePassword(t *testing.T) {
+	log.Println("TestChangePassword")
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example8.com", Password: "changeme"})
+	if err != nil {
+		t.Error(err)
+	}
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		return
+	}
+	if err != nil {
+		t.Error(err)
+	}
+	token := re.GetToken()
+	pctx := ctx
+	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
+	r0, err := c.ChangePassword(ctx, &pb.ChangePasswordRequest{Pass: "changeme2"})
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Equal(t, r0.GetStatus(), pb.ResponseStatus_Ok)
+	r, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme3"})
+	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_BadRequest)
+	r2, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme"})
+	assert.Equal(t, r2.GetStatus(), pb.ResponseStatus_BadRequest)
+	r3, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
+	assert.Equal(t, r3.GetStatus(), pb.ResponseStatus_Ok)
+}
