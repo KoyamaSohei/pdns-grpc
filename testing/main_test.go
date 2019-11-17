@@ -289,12 +289,13 @@ func TestChangePassword(t *testing.T) {
 	token := re.GetToken()
 	pctx := ctx
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
-	_, err = c.ChangePassword(ctx, &pb.ChangePasswordRequest{Pass: "changeme2"})
+	r0, err := c.ChangePassword(ctx, &pb.ChangePasswordRequest{Pass: "changeme2"})
 	if err != nil {
 		t.Error(err)
 	}
-	r, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "example8.com", Password: "changeme3"})
+	assert.Equal(t, r0.GetStatus(), pb.ResponseStatus_Ok)
+	r, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme3"})
 	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_BadRequest)
-	r, err = c.GetToken(pctx, &pb.GetTokenRequest{Email: "example8.com", Password: "changeme2"})
-	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_Ok)
+	r2, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
+	assert.Equal(t, r2.GetStatus(), pb.ResponseStatus_Ok)
 }
