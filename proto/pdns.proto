@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 service PdnsService {
   rpc ping(Ping) returns (Pong);
   rpc createAccount (CreateAccountRequest) returns (CreateAccountResponse);
+  rpc getToken (getTokenRequest) returns (getTokenResponse);
   rpc initZone (InitZoneRequest) returns (InitZoneResponse);
   rpc removeZone (RemoveZoneRequest) returns (RemoveZoneResponse);
   rpc addRecord (AddRecordRequest) returns (AddRecordResponse);
@@ -37,6 +38,16 @@ message CreateAccountResponse {
     AlreadyExists = 3;
   } 
   Status status=1;
+  string token=2;
+}
+
+message getTokenRequest {
+  string email=1;
+  string password=2;
+}
+
+message getTokenResponse {
+  ResponseStatus status=1;
   string token=2;
 }
 

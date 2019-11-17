@@ -31,6 +31,21 @@ func TestPing(t *testing.T) {
 	assert.Equal(t, r.GetText(), "hello, Bob")
 }
 
+func TestGetToken(t *testing.T) {
+	log.Println("TestGetToken")
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, err = c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "foo.example.com", Password: "changeme"})
+	r, err := c.GetToken(ctx, &pb.GetTokenRequest{Email: "foo.example.com", Password: "changeme"})
+	assert.Equal(t, r.GetStatus(), pb.ResponseStatus_Ok)
+}
+
 func TestInitZone(t *testing.T) {
 	log.Println("TestInitZone")
 	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
