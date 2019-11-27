@@ -324,7 +324,7 @@ func TestChangePassword(t *testing.T) {
 	}
 	pctx := ctx
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme"})
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
 		token = res.GetToken()
 		ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example8.com"})
