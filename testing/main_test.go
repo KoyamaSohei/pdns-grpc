@@ -281,6 +281,7 @@ func TestGetDomains(t *testing.T) {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example7.com", Password: "changeme"})
 		token = res.GetToken()
 		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example7.com"})
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example77.com"})
 	} else {
 		token = re.GetToken()
 	}
