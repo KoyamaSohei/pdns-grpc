@@ -139,13 +139,16 @@ func TestGetRecords(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example3.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example3.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example3.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example3.com", Origin: "example3.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
