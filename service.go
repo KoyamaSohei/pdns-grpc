@@ -399,7 +399,9 @@ func (s *server) GetRecords(ctx context.Context, in *pb.GetRecordsRequest) (*pb.
 	li := make([]*pb.Record, 0, 10)
 	for rows.Next() {
 		item := new(pb.Record)
-		err := rows.Scan(&item.Name, &item.Type, &item.Content, &item.Ttl)
+		var t string
+		err := rows.Scan(&item.Name, &t, &item.Content, &item.Ttl)
+		item.Type = (pb.RRType)(pb.RRType_value[t])
 		if err != nil {
 			tx.Rollback()
 			return &pb.GetRecordsResponse{Status: pb.ResponseStatus_InternalServerError}, err
