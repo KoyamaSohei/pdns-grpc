@@ -60,13 +60,16 @@ func TestInitZone(t *testing.T) {
 	defer cancel()
 
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	r, err := c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example.com"})
 	log.Println(r.GetStatus().String())
@@ -101,13 +104,16 @@ func TestAddRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example2.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example2.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example2.com"})
 	r, err := c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example2.com", Origin: "example2.com", Type: pb.RRType_A, Ttl: 3500, Content: "21.21.21.21"})
@@ -169,13 +175,16 @@ func TestRemoveRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example4.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example4.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example4.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example4.com", Origin: "example4.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
@@ -195,13 +204,16 @@ func TestUpdateRecord(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example5.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example5.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example5.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example5.com", Origin: "example5.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
@@ -226,13 +238,16 @@ func TestRemoveZone(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example6.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example6.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example6.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example6.com", Origin: "example6.com", Type: pb.RRType_A, Ttl: 3500, Content: "33.33.33.33"})
@@ -254,13 +269,16 @@ func TestGetDomains(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example7.com", Password: "changeme"})
-	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
-	}
+	var token string
 	if err != nil {
 		log.Fatal(err)
 	}
-	token := re.GetToken()
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example7.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example7.com"})
 	r, err := c.GetDomains(ctx, &empty.Empty{})
@@ -281,16 +299,16 @@ func TestChangePassword(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example8.com", Password: "changeme"})
+	var token string
 	if err != nil {
-		t.Error(err)
+		log.Fatal(err)
 	}
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
-		return
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme"})
+		token = res.GetToken()
+	} else {
+		token = re.GetToken()
 	}
-	if err != nil {
-		t.Error(err)
-	}
-	token := re.GetToken()
 	pctx := ctx
 	ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
 	r0, err := c.ChangePassword(ctx, &pb.ChangePasswordRequest{Pass: "changeme2"})
