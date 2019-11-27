@@ -305,7 +305,7 @@ func (s *server) RemoveRecord(ctx context.Context, in *pb.RemoveRecordRequest) (
 	if err != nil {
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_BadRequest}, err
 	}
-	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1 AND name = $2 AND type = $3 AND content = $4", id, in.GetName(), in.GetType().String(), in.GetContent())
+	_, err = tx.ExecContext(ctx, "DELETE FROM records WHERE domain_id = $1 AND name = $2 AND type = $3 AND content = $4;", id, in.GetName(), in.GetType().String(), in.GetContent())
 	if err != nil {
 		tx.Rollback()
 		return &pb.RemoveRecordResponse{Status: pb.ResponseStatus_InternalServerError}, err
