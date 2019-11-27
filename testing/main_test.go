@@ -152,6 +152,7 @@ func TestGetRecords(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example3.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example3.com"})
 	} else {
 		token = re.GetToken()
 	}
@@ -182,6 +183,7 @@ func TestRemoveRecord(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example4.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example4.com"})
 	} else {
 		token = re.GetToken()
 	}
@@ -211,6 +213,7 @@ func TestUpdateRecord(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example5.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example5.com"})
 	} else {
 		token = re.GetToken()
 	}
@@ -245,6 +248,7 @@ func TestRemoveZone(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example6.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example6.com"})
 	} else {
 		token = re.GetToken()
 	}
@@ -276,6 +280,7 @@ func TestGetDomains(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example7.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example7.com"})
 	} else {
 		token = re.GetToken()
 	}
@@ -306,6 +311,7 @@ func TestChangePassword(t *testing.T) {
 	if s := re.GetStatus().String(); s == "AlreadyExists" {
 		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme"})
 		token = res.GetToken()
+		_, _ = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example8.com"})
 	} else {
 		token = re.GetToken()
 	}
