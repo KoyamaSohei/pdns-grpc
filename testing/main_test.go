@@ -152,6 +152,7 @@ func TestGetRecords(t *testing.T) {
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "sub.example3.com", Origin: "example3.com", Type: pb.RRType_A, Ttl: 3500, Content: "22.22.22.22"})
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example3.com"})
 	assert.Equal(t, len(r.GetRecords()), 2)
+	assert.Equal(t, r.GetRecords()[0].GetType(), pb.RRType_A)
 }
 
 func TestRemoveRecord(t *testing.T) {
