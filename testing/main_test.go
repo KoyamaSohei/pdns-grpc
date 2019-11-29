@@ -198,9 +198,11 @@ func TestRemoveRecord(t *testing.T) {
 
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example4.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example4.com", Origin: "example4.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
+	r0, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com"})
+	assert.Equal(t, len(r0.GetRecords()), 1)
 	_, err = c.RemoveRecord(ctx, &pb.RemoveRecordRequest{Name: "example4.com", Origin: "example4.com", Type: pb.RRType_A, Content: "11.11.11.11"})
-	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com"})
-	assert.Equal(t, len(r.GetRecords()), 0)
+	r1, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com"})
+	assert.Equal(t, len(r1.GetRecords()), 0)
 }
 
 func TestUpdateRecord(t *testing.T) {
