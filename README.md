@@ -1,14 +1,4 @@
-# pdns-grpc
-
-Manage DNS Resource Record with PowerDNS, gRPC, and PostgreSQL.
-
-![](https://github.com/KoyamaSohei/pdns-grpc/workflows/main/badge.svg)
-
-## Usage
-
-Please check [testing](https://github.com/KoyamaSohei/pdns-grpc/tree/master/testing)
-
-Coming Soon...
+# special seminar api
 
 ## Environment Variables
 

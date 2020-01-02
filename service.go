@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	pb "github.com/KoyamaSohei/special-seminar-api/proto"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	_ "github.com/lib/pq"
 )

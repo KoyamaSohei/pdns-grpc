@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package pdns_grpc;
+package api;
 
 import "google/protobuf/empty.proto";
 

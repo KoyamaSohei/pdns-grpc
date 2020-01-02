@@ -1,5 +1,5 @@
 FROM golang
-WORKDIR /go/src/github.com/KoyamaSohei/pdns-grpc
+WORKDIR /go/src/github.com/KoyamaSohei/special-seminar-api
 ENV GO111MODULE=on
 COPY . .
 RUN openssl genrsa > jwtkey.rsa

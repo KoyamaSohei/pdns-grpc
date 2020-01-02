@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 
-	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	pb "github.com/KoyamaSohei/special-seminar-api/proto"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"google.golang.org/grpc"
 )

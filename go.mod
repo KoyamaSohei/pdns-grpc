@@ -1,4 +1,4 @@
-module github.com/KoyamaSohei/pdns-grpc
+module github.com/KoyamaSohei/special-seminar-api
 
 go 1.12
 

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/KoyamaSohei/pdns-grpc/proto"
+	pb "github.com/KoyamaSohei/special-seminar-api/proto"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
