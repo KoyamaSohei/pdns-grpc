@@ -7,7 +7,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0
 	github.com/lib/pq v1.3.0
-	github.com/miekg/dns v1.1.26
+	github.com/miekg/dns v1.1.27
 	github.com/stretchr/testify v1.4.0
 	google.golang.org/grpc v1.26.0
 )
