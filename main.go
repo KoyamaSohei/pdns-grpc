@@ -68,13 +68,19 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	log.Printf("listening on %s:%s", pdnshost, pdnsport)
+	ops := zap.NewProductionConfig()
+	ops.OutputPaths = []string{"stdout"}
+	z, err := ops.Build()
+	if err != nil {
+		log.Fatal(err)
+	}
 	s := grpc.NewServer(
 		grpc_middleware.WithStreamServerChain(
 			grpc_auth.StreamServerInterceptor(AuthHandler),
 			grpc_zap.StreamServerInterceptor(zap.NewNop())),
 		grpc_middleware.WithUnaryServerChain(
 			grpc_auth.UnaryServerInterceptor(AuthHandler),
-			grpc_zap.UnaryServerInterceptor(zap.NewNop())))
+			grpc_zap.UnaryServerInterceptor(z)))
 	pb.RegisterPdnsServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
