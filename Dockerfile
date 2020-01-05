@@ -5,4 +5,5 @@ COPY . .
 RUN openssl genrsa > jwtkey.rsa
 RUN openssl rsa -in jwtkey.rsa -pubout > jwtkey.rsa.pub
 RUN go build 
+EXPOSE 50051
 CMD ./special-seminar-api
