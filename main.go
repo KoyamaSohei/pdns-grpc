@@ -8,7 +8,10 @@ import (
 	"os"
 
 	pb "github.com/KoyamaSohei/special-seminar-api/proto"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -66,9 +69,12 @@ func main() {
 	}
 	log.Printf("listening on %s:%s", pdnshost, pdnsport)
 	s := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_auth.StreamServerInterceptor(AuthHandler)),
-		grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(AuthHandler)),
-	)
+		grpc_middleware.WithStreamServerChain(
+			grpc_auth.StreamServerInterceptor(AuthHandler),
+			grpc_zap.StreamServerInterceptor(zap.NewNop())),
+		grpc_middleware.WithUnaryServerChain(
+			grpc_auth.UnaryServerInterceptor(AuthHandler),
+			grpc_zap.UnaryServerInterceptor(zap.NewNop())))
 	pb.RegisterPdnsServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
