@@ -74,6 +74,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	z.Info("zap working....")
 	s := grpc.NewServer(
 		grpc_middleware.WithStreamServerChain(
 			grpc_auth.StreamServerInterceptor(AuthHandler),
