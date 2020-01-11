@@ -65,20 +65,19 @@ func GetDB() *sql.DB {
 }
 
 func main() {
-	initConfig()
-	InitJWTAuth()
-	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("listening on %s:%s", pdnshost, pdnsport)
 	ops := zap.NewProductionConfig()
 	ops.OutputPaths = []string{"stdout"}
 	logger, err := ops.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
-	logger.Info("zap working....")
+	initConfig()
+	InitJWTAuth()
+	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
+	if err != nil {
+		logger.Error("failed to listen", zap.Error(err))
+	}
+	logger.Info("listening on " + pdnshost + " : " + pdnsport)
 	s := grpc.NewServer(
 		grpc_middleware.WithStreamServerChain(
 			grpc_auth.StreamServerInterceptor(AuthHandler),
