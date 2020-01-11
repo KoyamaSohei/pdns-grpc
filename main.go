@@ -67,10 +67,7 @@ func GetDB() *sql.DB {
 func main() {
 	ops := zap.NewProductionConfig()
 	ops.OutputPaths = []string{"stdout"}
-	logger, err := ops.Build()
-	if err != nil {
-		log.Fatal(err)
-	}
+	logger, _ = ops.Build()
 	initConfig()
 	InitJWTAuth()
 	lis, err := net.Listen("tcp", pdnshost+":"+pdnsport)
