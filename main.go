@@ -24,7 +24,10 @@ var (
 	psqlpass = ""
 )
 
-var db *sql.DB
+var (
+	db     *sql.DB
+	logger *zap.Logger
+)
 
 func initConfig() {
 	if host := os.Getenv("GRPC_HOST"); host != "" {
@@ -45,6 +48,7 @@ func initConfig() {
 	if pass := os.Getenv("GPGSQL_PASSWORD"); pass != "" {
 		psqlpass = pass
 	}
+	logger.Info("psqlhost: " + psqlhost)
 }
 
 // GetDB get db
@@ -53,7 +57,7 @@ func GetDB() *sql.DB {
 		dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=%s", psqluser, psqlpass, psqlname, psqlhost)
 		newDb, err := sql.Open("postgres", dbinfo)
 		if err != nil {
-			log.Fatalln(err)
+			logger.Error("db connection error: ", zap.Error(err))
 		}
 		db = newDb
 	}
@@ -70,18 +74,18 @@ func main() {
 	log.Printf("listening on %s:%s", pdnshost, pdnsport)
 	ops := zap.NewProductionConfig()
 	ops.OutputPaths = []string{"stdout"}
-	z, err := ops.Build()
+	logger, err := ops.Build()
 	if err != nil {
 		log.Fatal(err)
 	}
-	z.Info("zap working....")
+	logger.Info("zap working....")
 	s := grpc.NewServer(
 		grpc_middleware.WithStreamServerChain(
 			grpc_auth.StreamServerInterceptor(AuthHandler),
 			grpc_zap.StreamServerInterceptor(zap.NewNop())),
 		grpc_middleware.WithUnaryServerChain(
 			grpc_auth.UnaryServerInterceptor(AuthHandler),
-			grpc_zap.UnaryServerInterceptor(z)))
+			grpc_zap.UnaryServerInterceptor(logger)))
 	pb.RegisterPdnsServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
