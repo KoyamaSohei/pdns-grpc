@@ -27,7 +27,6 @@ services:
       - db
       - pdns
     ports:
-      - 8080:8080
       - 50051:50051
     environment:
       - GPGSQL_HOST=db
@@ -38,3 +37,4 @@ services:
       - GRPC_PORT=50051
       - SOA_MNAME=ns.example.com
       - SOA_RNAME=mail.example.com
+      - TARGET_IP=12.34.56.78

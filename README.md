@@ -33,3 +33,6 @@
 - GPGSQL_DBNAME(default = `"postgres"`)
 
   database name of postgres which this package connect to.
+
+- TARGET_IP(required)
+  NS value
