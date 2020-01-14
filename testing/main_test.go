@@ -407,4 +407,5 @@ func TestConflictDomain(t *testing.T) {
 	}
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example.com"})
 	assert.NotEqual(t, nil, err)
+	assert.Equal(t, "this domain is already used by other user", err.Error())
 }
