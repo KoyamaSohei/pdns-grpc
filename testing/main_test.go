@@ -164,9 +164,21 @@ func TestGetRecords(t *testing.T) {
 	}
 
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example3.com"})
+	if err != nil {
+		log.Fatal(err)
+	}
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example3.com", Origin: "example3.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
+	if err != nil {
+		log.Fatal(err)
+	}
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "sub.example3.com", Origin: "example3.com", Type: pb.RRType_A, Ttl: 3500, Content: "22.22.22.22"})
+	if err != nil {
+		log.Fatal(err)
+	}
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example3.com"})
+	if err != nil {
+		log.Fatal(err)
+	}
 	assert.Equal(t, len(r.GetRecords()), 2)
 	assert.Equal(t, r.GetRecords()[0].GetType(), pb.RRType_A)
 }

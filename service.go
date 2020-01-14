@@ -216,6 +216,11 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 		tx.Rollback()
 		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 	}
+	_, err = tx.ExecContext(ctx, "INSERT INTO records(domain_id,name,type,content,change_date) VALUES ($1,$2,'NS',$3,$4);", id, in.GetDomain(), os.Getenv("TARGET_IP"), se)
+	if err != nil {
+		tx.Rollback()
+		return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
+	}
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
