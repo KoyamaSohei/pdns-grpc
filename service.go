@@ -198,6 +198,12 @@ func (s *server) InitZone(ctx context.Context, in *pb.InitZoneRequest) (*pb.Init
 			return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, err
 		}
 	} else {
+		var i string
+		err = tx.QueryRowContext(ctx, "SELECT id FROM domains WHERE name = $1;", in.GetDomain()).Scan(&i)
+		if err == nil {
+			tx.Rollback()
+			return &pb.InitZoneResponse{Status: pb.ResponseStatus_InternalServerError}, fmt.Errorf("this domain is already used by other user")
+		}
 		_, err = tx.ExecContext(ctx, "INSERT INTO domains(name,type,account) VALUES ($1,'master',$2);", in.GetDomain(), a)
 	}
 

@@ -381,3 +381,31 @@ func TestChangePassword(t *testing.T) {
 	r3, err := c.GetToken(pctx, &pb.GetTokenRequest{Email: "mail.example8.com", Password: "changeme2"})
 	assert.Equal(t, r3.GetStatus(), pb.ResponseStatus_Ok)
 }
+
+func TestConflictDomain(t *testing.T) {
+	log.Println("TestChangePassword")
+	conn, err := grpc.Dial("0.0.0.0:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewPdnsServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	re, err := c.CreateAccount(ctx, &pb.CreateAccountRequest{Email: "mail.example9.com", Password: "changeme"})
+	var token string
+	if err != nil {
+		log.Fatal(err)
+	}
+	if s := re.GetStatus().String(); s == "AlreadyExists" {
+		res, _ := c.GetToken(ctx, &pb.GetTokenRequest{Email: "mail.example9.com", Password: "changeme"})
+		token = res.GetToken()
+		ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
+	} else {
+		token = re.GetToken()
+		ctx = metadata.AppendToOutgoingContext(ctx, "token", token)
+	}
+	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example.com"})
+	assert.NotEqual(t, nil, err)
+	assert.Equal(t, "rpc error: code = Unknown desc = this domain is already used by other user", err.Error())
+}
