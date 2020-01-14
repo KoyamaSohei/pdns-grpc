@@ -179,8 +179,17 @@ func TestGetRecords(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	assert.Equal(t, len(r.GetRecords()), 2)
-	assert.Equal(t, r.GetRecords()[0].GetType(), pb.RRType_A)
+	assert.Equal(t, len(r.GetRecords()), 3)
+	for _, rec := range r.GetRecords() {
+		k := rec.GetName()
+		if k == "example3.com" && rec.GetType() == pb.RRType_A {
+			assert.Equal(t, rec.Content, "11.11.11.11")
+		} else if k == "sub.example3.com" {
+			assert.Equal(t, rec.Content, "22.22.22.22")
+		} else {
+			assert.Equal(t, rec.Content, "12.34.56.78")
+		}
+	}
 }
 
 func TestRemoveRecord(t *testing.T) {
@@ -211,10 +220,10 @@ func TestRemoveRecord(t *testing.T) {
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example4.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example4.com", Origin: "example4.com", Type: pb.RRType_A, Ttl: 3500, Content: "11.11.11.11"})
 	r0, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com"})
-	assert.Equal(t, len(r0.GetRecords()), 1)
+	assert.Equal(t, len(r0.GetRecords()), 2)
 	_, err = c.RemoveRecord(ctx, &pb.RemoveRecordRequest{Name: "example4.com", Origin: "example4.com", Type: pb.RRType_A, Content: "11.11.11.11"})
 	r1, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example4.com"})
-	assert.Equal(t, len(r1.GetRecords()), 0)
+	assert.Equal(t, len(r1.GetRecords()), 1)
 }
 
 func TestUpdateRecord(t *testing.T) {
@@ -250,8 +259,15 @@ func TestUpdateRecord(t *testing.T) {
 			Target: &pb.UpdateRecordRequest_Target{Name: "example5.com", Type: pb.RRType_A, Content: "11.11.11.11"},
 			Source: &pb.UpdateRecordRequest_Source{Name: "example5.com", Type: pb.RRType_A, Content: "22.22.22.22", Ttl: 9999}})
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example5.com"})
-	assert.Equal(t, len(r.GetRecords()), 1)
-	assert.Equal(t, r.GetRecords()[0].Content, "22.22.22.22")
+	assert.Equal(t, len(r.GetRecords()), 2)
+	for _, rec := range r.GetRecords() {
+		if rec.GetType() == pb.RRType_A {
+			assert.Equal(t, rec.Content, "22.22.22.22")
+		} else {
+			assert.Equal(t, rec.Content, "12.34.56.78")
+		}
+	}
+
 }
 
 func TestRemoveZone(t *testing.T) {
@@ -282,8 +298,14 @@ func TestRemoveZone(t *testing.T) {
 	_, err = c.InitZone(ctx, &pb.InitZoneRequest{Domain: "example6.com"})
 	_, err = c.AddRecord(ctx, &pb.AddRecordRequest{Name: "example6.com", Origin: "example6.com", Type: pb.RRType_A, Ttl: 3500, Content: "33.33.33.33"})
 	r, err := c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example6.com"})
-	assert.Equal(t, len(r.GetRecords()), 1)
-	assert.Equal(t, r.GetRecords()[0].Content, "33.33.33.33")
+	assert.Equal(t, len(r.GetRecords()), 2)
+	for _, rec := range r.GetRecords() {
+		if rec.GetType() == pb.RRType_A {
+			assert.Equal(t, rec.Content, "33.33.33.33")
+		} else {
+			assert.Equal(t, rec.Content, "12.34.56.78")
+		}
+	}
 	_, err = c.RemoveZone(ctx, &pb.RemoveZoneRequest{Domain: "example6.com"})
 	r, err = c.GetRecords(ctx, &pb.GetRecordsRequest{Origin: "example6.com"})
 	assert.Equal(t, len(r.GetRecords()), 0)
